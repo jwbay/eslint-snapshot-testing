@@ -12,8 +12,7 @@ const rule: Rule.RuleModule = {
 				const callExpression = node as CallExpression
 				if (
 					callExpression.callee.type === 'Identifier' &&
-					callExpression.callee.name !==
-						callExpression.callee.name.toLowerCase()
+					callExpression.callee.name[0] !== callExpression.callee.name[0].toLowerCase()
 				) {
 					context.report({
 						loc: callExpression.callee.loc!,

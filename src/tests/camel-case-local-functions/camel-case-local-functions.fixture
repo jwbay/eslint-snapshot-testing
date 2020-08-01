@@ -1,0 +1,7 @@
+function ShouldFail() {}
+function shouldPass() {}
+
+ShouldFail();
+shouldPass();
+
+ShouldFail();
