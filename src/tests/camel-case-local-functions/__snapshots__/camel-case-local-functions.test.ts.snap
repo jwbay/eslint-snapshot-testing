@@ -1,28 +1,33 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`invalid cases 1`] = `
-"[33mwarning[39m: [1mlocal function names should be camelCase[22m [2m(camel-case-local-functions)[22m at [32mcamel-case-local-functions.fixture.ts:4:1[39m:
-  2 | function ShouldFail() {}
-  3 | 
-> 4 | ShouldFail()
-    | ^
-  5 | 
-  6 | ShouldFail()
-  7 | 
+"
+function ShouldFail() {}
 
+function lalala() {
+    ShouldFail()
+    ~~~~~~~~~~  
+}
 
-[33mwarning[39m: [1mlocal function names should be camelCase[22m [2m(camel-case-local-functions)[22m at [32mcamel-case-local-functions.fixture.ts:6:1[39m:
-  4 | ShouldFail()
-  5 | 
-> 6 | ShouldFail()
-    | ^
-  7 | 
-  8 | 
+ShouldFail()
+~~~~~~~~~~  
 
-
-[31m[1m2 errors found.[22m[39m"
+"
 `;
 
-exports[`should ignore .tsx files 1`] = `""`;
+exports[`should ignore .tsx files 1`] = `
+"
+function ShouldPass() {}
 
-exports[`valid cases 1`] = `""`;
+ShouldPass()
+"
+`;
+
+exports[`valid cases 1`] = `
+"
+function shouldPass() {}
+
+shouldPass()
+
+"
+`;

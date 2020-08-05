@@ -8,7 +8,9 @@ shouldPass()
 /** @test invalid cases */
 function ShouldFail() {}
 
-ShouldFail()
+function lalala() {
+    ShouldFail()
+}
 
 ShouldFail()
 

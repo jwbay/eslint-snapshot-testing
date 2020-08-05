@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-import { Linter, Rule, ESLint } from 'eslint'
+import { Linter, Rule } from 'eslint'
 const commentParser: typeof import('comment-parser') = require('comment-parser')
 
 interface RunOptions {
@@ -10,8 +10,7 @@ interface RunOptions {
 	testDirectory: string
 	// TODO probably accept base config here
 
-	// NEXT: squigglies
-	// backwards: https://github.com/angular-eslint/angular-eslint/blob/5b66f671721d79a49f89c4f7507bbee81d87e1f1/packages/utils/src/test-helpers.ts#L127
+	// NEXT: attach error messages to squigglies
 }
 
 export function run(options: RunOptions) {
@@ -28,8 +27,10 @@ export function run(options: RunOptions) {
 		return
 	}
 
-	const sourceCode = fs.readFileSync(path.join(options.testDirectory, fixtureFileName), 'utf8')
-	const tests = parseFixture(sourceCode, fixtureFileName)
+	const fixtureSource = fs
+		.readFileSync(path.join(options.testDirectory, fixtureFileName), 'utf8')
+		.replace(/\r\n/g, '\n')
+	const tests = parseFixture(fixtureSource, fixtureFileName)
 	tests.forEach((entry) => {
 		test(entry.testName, async () => {
 			const linter = new Linter({})
@@ -41,11 +42,7 @@ export function run(options: RunOptions) {
 			}
 
 			const result = linter.verify(entry.testSource, config, entry.fileName)
-			const formatted = await getSnapshottableOutput(
-				result,
-				fixtureFileName,
-				entry.testSource
-			)
+			const formatted = await getSnapshottableOutput(result, entry.fileName, entry.testSource)
 			expect(formatted).toMatchSnapshot()
 		})
 	})
@@ -107,27 +104,32 @@ async function getSnapshottableOutput(
 	filePath: string,
 	source: string
 ) {
-	const formatter = await new ESLint({}).loadFormatter('codeframe')
-	const lintResult: Partial<ESLint.LintResult> = {
-		source,
-		filePath,
-		messages,
-		errorCount: messages.length,
-		warningCount: 0,
-	}
+	const sourceLines = source.split('\n')
+	const errorMatrix = [] as string[][]
+	messages.forEach((message) => {
+		let { line, column, endLine = line, endColumn = column } = message
 
-	return formatter.format([lintResult as ESLint.LintResult])
-}
+		do {
+			if (!errorMatrix[line]) {
+				const sourceLineLength = sourceLines[line - 1].length
+				errorMatrix[line] = Array(sourceLineLength).fill(' ')
+			}
 
-function getTestDirectory() {
-	// https://github.com/errwischt/stacktrace-parser/blob/4e4009800d2eb076393be696a5c57f7517da2027/src/stack-trace-parser.js#L123
-	const { stack } = new Error()
-	const callingEntry = stack!
-		.split(path.sep)
-		.slice(1)
-		.find((line) => {
-			// at getTestDirectory (C:\Source\eslint-misc-rules\src\tests\ruleSnapshotTester.ts:51:20)
-			return !line.trim().endsWith(path.basename(__filename))
-		})
-	console.log(callingEntry)
+			do {
+				errorMatrix[line][column - 1] = '~'
+				column++
+			} while (column < endColumn)
+			line++
+		} while (line < endLine)
+	})
+
+	const interleaved = sourceLines.reduce<string[]>((result, nextLine, index) => {
+		const errorLine = errorMatrix[index + 1]
+		if (errorLine) {
+			return [...result, nextLine, errorLine.join('')]
+		}
+		return [...result, nextLine]
+	}, [])
+
+	return interleaved.join('\n')
 }
