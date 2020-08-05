@@ -7,6 +7,10 @@ const rule: Rule.RuleModule = {
 		schema: [], // no options
 	},
 	create(context) {
+		if (context.getFilename().endsWith('.tsx')) {
+			return {}
+		}
+
 		return {
 			CallExpression(node) {
 				const callExpression = node as CallExpression
