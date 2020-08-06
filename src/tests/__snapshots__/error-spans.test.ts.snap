@@ -4,41 +4,45 @@ exports[`should handle indented multiline errors 1`] = `
 "
 function nested2() {
     class NestedFoo {
-    ~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~ [1]
         bar() {}
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~ [1]
     }
-~~~~~
+~~~~~ [1]
 }
-"
+
+[1] class name 'NestedFoo' should not include foo."
 `;
 
 exports[`should handle indented single line errors 1`] = `
 "
 function nested() {
     let somethingFoo
-        ~~~~~~~~~~~~
+        ~~~~~~~~~~~~ [1]
 }
 
-"
+
+[1] variable name 'somethingFoo' should not include foo."
 `;
 
 exports[`should handle multiline errors 1`] = `
 "
 class SomethingFoo {
-~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~ [1]
     bar() {}
-~~~~~~~~~~~~
+~~~~~~~~~~~~ [1]
 }
-~
+~ [1]
 
-"
+
+[1] class name 'SomethingFoo' should not include foo."
 `;
 
 exports[`should handle single line errors 1`] = `
 "
 let somethingFoo
-    ~~~~~~~~~~~~
+    ~~~~~~~~~~~~ [1]
 
-"
+
+[1] variable name 'somethingFoo' should not include foo."
 `;

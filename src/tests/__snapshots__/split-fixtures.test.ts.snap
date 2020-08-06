@@ -6,13 +6,14 @@ function ShouldFail() {}
 
 function lalala() {
     ShouldFail()
-    ~~~~~~~~~~  
+    ~~~~~~~~~~   [1]
 }
 
 ShouldFail()
-~~~~~~~~~~  
+~~~~~~~~~~   [1]
 
-"
+
+[1] local function names should be camelCase"
 `;
 
 exports[`should ignore .tsx files 1`] = `

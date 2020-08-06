@@ -3,30 +3,34 @@
 exports[`should lint correctly 1`] = `
 "// should handle single line errors
 let somethingFoo2
-    ~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~ [1]
 
 // should handle indented single line errors
 function nestedFoo() {
     let somethingFoo
-        ~~~~~~~~~~~~
+        ~~~~~~~~~~~~ [2]
 }
 
 // should handle multiline errors
 class SomethingFoo2 {
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~ [3]
     bar() {}
-~~~~~~~~~~~~
+~~~~~~~~~~~~ [3]
 }
-~
+~ [3]
 
 // should handle indented multiline errors
 function nested3() {
     class NestedFoo {
-    ~~~~~~~~~~~~~~~~~
+    ~~~~~~~~~~~~~~~~~ [4]
         bar() {}
-~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~ [4]
     }
-~~~~~
+~~~~~ [4]
 }
-"
+
+[1] variable name 'somethingFoo2' should not include foo.
+[2] variable name 'somethingFoo' should not include foo.
+[3] class name 'SomethingFoo2' should not include foo.
+[4] class name 'NestedFoo' should not include foo."
 `;

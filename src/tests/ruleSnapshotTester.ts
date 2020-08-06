@@ -9,8 +9,6 @@ interface RunOptions {
 	// TODO infer path from new Error().stack
 	testDirectory: string
 	// TODO probably accept base config here
-
-	// NEXT: attach error messages to squigglies
 }
 
 export function run(options: RunOptions) {
@@ -113,12 +111,18 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 
 function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) {
 	const sourceLines = source.split('\n')
-	const errorMatrix = [] as string[][]
+	const errorMatrix: string[][] = []
+	const uniqueMessages: string[] = []
 	messages.forEach((message) => {
 		const startLine = message.line - 1
 		const endLine = message.endLine == null ? startLine : message.endLine - 1
 		const startColumn = message.column - 1
 		const endColumn = message.endColumn == null ? startColumn : message.endColumn - 1
+
+		let messageId = uniqueMessages.indexOf(message.message) + 1
+		if (messageId === 0) {
+			messageId = uniqueMessages.push(message.message)
+		}
 
 		let currentLine = startLine
 		let currentColumn = startColumn
@@ -136,6 +140,8 @@ function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) 
 				errorMatrix[currentLine][currentColumn] = '~'
 				currentColumn++
 			} while (currentColumn < endColumnForThisLine)
+
+			errorMatrix[currentLine].push(' ', '[', messageId.toString(), ']')
 			currentLine++
 			currentColumn = 0
 		} while (currentLine < endLine + 1)
@@ -148,6 +154,10 @@ function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) 
 		}
 		return [...result, nextLine]
 	}, [])
+
+	interleaved.push(
+		...uniqueMessages.map((errorMessage, index) => `[${index + 1}] ${errorMessage}`)
+	)
 
 	return interleaved.join('\n')
 }
