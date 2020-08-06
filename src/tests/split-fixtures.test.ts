@@ -1,5 +1,5 @@
-import { run } from '../ruleSnapshotTester'
-import rule from '../../rules/camel-case-local-functions'
+import { run } from './ruleSnapshotTester'
+import rule from '../rules/camel-case-local-functions'
 import { RuleTester } from 'eslint'
 
  new RuleTester({}).run('wat', rule, {
@@ -26,6 +26,6 @@ import { RuleTester } from 'eslint'
 
 run({
 	rule,
-	ruleName: 'camel-case-local-functions',
+	ruleName: 'split-fixture',
 	testDirectory: __dirname,
 })
