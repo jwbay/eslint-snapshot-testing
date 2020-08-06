@@ -42,7 +42,7 @@ export function run(options: RunOptions) {
 			}
 
 			const result = linter.verify(entry.testSource, config, entry.fileName)
-			const formatted = await getSnapshottableOutput(result, entry.fileName, entry.testSource)
+			const formatted = getSnapshottableOutput(result, entry.fileName, entry.testSource)
 			expect(formatted).toMatchSnapshot()
 		})
 	})
@@ -53,6 +53,9 @@ interface FixtureEntry {
 	fileName: string
 	testSource: string
 }
+
+const knownTags = ['test', 'filename'] as const;
+type KnownTags = typeof knownTags[number];
 
 function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	const jsDocRegex = /\/\*\*\s*\n*([^\*]|(\*(?!\/)))*\*\//gm
@@ -81,7 +84,8 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 		}
 
 		for (const instruction of parsedBlock.tags) {
-			switch (instruction.tag?.toLowerCase()) {
+			const tag = instruction.tag?.toLowerCase() as KnownTags;
+			switch (tag) {
 				case 'test':
 					entry.testName = instruction.name + ' ' + instruction.description
 					continue
@@ -89,7 +93,8 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 					entry.fileName = instruction.name
 					continue
 				default:
-					console.warn(`Unrecognized tag ${instruction.tag} in fixture JSDoc`)
+					const supported = knownTags.join(', ');
+					console.warn(`Unrecognized tag '@${instruction.tag}' in fixture JSDoc. Supported tags: ${supported}`)
 			}
 		}
 
@@ -99,7 +104,7 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	return result
 }
 
-async function getSnapshottableOutput(
+function getSnapshottableOutput(
 	messages: Linter.LintMessage[],
 	filePath: string,
 	source: string
