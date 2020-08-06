@@ -9,6 +9,14 @@ interface RunOptions {
 	// TODO infer path from new Error().stack
 	testDirectory: string
 	// TODO probably accept base config here
+
+	// TODOS
+	// tab support in fixtures
+	// option support in fixtures (maybe)
+	// expose raw serializer somehow for scoped mocking support
+	// remove tslib
+	// set up CI
+	// set up semantic release
 }
 
 export function run(options: RunOptions) {
