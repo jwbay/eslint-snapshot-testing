@@ -26,6 +26,6 @@ import { RuleTester } from 'eslint'
 
 run({
 	rule,
-	ruleName: 'split-fixture',
+	ruleName: 'split-fixtures',
 	testDirectory: __dirname,
 })

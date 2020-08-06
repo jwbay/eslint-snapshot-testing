@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should handle indented multiline errors 1`] = `
+"
+function nested2() {
+    class NestedFoo {
+    ~~~~~~~~~~~~~~~~~
+        bar() {}
+~~~~~~~~~~~~~~~~
+    }
+~~~~~
+}
+"
+`;
+
+exports[`should handle indented single line errors 1`] = `
+"
+function nested() {
+    let somethingFoo
+        ~~~~~~~~~~~~
+}
+
+"
+`;
+
+exports[`should handle multiline errors 1`] = `
+"
+class SomethingFoo {
+~~~~~~~~~~~~~~~~~~~~
+    bar() {}
+~~~~~~~~~~~~
+}
+~
+
+"
+`;
+
+exports[`should handle single line errors 1`] = `
+"
+let somethingFoo
+    ~~~~~~~~~~~~
+
+"
+`;

@@ -16,10 +16,8 @@ interface RunOptions {
 export function run(options: RunOptions) {
 	const fixtureFileName = fs.readdirSync(options.testDirectory).find((entry) => {
 		const extension = path.extname(entry)
-		return (
-			entry.startsWith(options.ruleName) &&
-			(extension === '.fixture' || entry.replace(extension, '').endsWith('.fixture'))
-		)
+		const name = entry.replace(new RegExp(extension + '$'), '')
+		return name === options.ruleName || name === options.ruleName + '.fixture'
 	})
 
 	if (!fixtureFileName) {
@@ -35,13 +33,20 @@ export function run(options: RunOptions) {
 		test(entry.testName, async () => {
 			const linter = new Linter({})
 			linter.defineRule(options.ruleName, options.rule)
-			const config = {
-				rules: {
-					[options.ruleName]: 1 as const,
+			const result = linter.verify(
+				entry.testSource,
+				{
+					rules: {
+						[options.ruleName]: 1 as const,
+					},
+					// TODO configurable
+					parserOptions: {
+						ecmaVersion: 2015,
+						sourceType: 'module',
+					},
 				},
-			}
-
-			const result = linter.verify(entry.testSource, config, entry.fileName)
+				entry.fileName
+			)
 			const formatted = getSnapshottableOutput(result, entry.testSource)
 			expect(formatted).toMatchSnapshot()
 		})
@@ -110,25 +115,34 @@ function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) 
 	const sourceLines = source.split('\n')
 	const errorMatrix = [] as string[][]
 	messages.forEach((message) => {
-		let { line, column, endLine = line, endColumn = column } = message
+		const startLine = message.line - 1
+		const endLine = message.endLine == null ? startLine : message.endLine - 1
+		const startColumn = message.column - 1
+		const endColumn = message.endColumn == null ? startColumn : message.endColumn - 1
 
+		let currentLine = startLine
+		let currentColumn = startColumn
 		do {
-			if (!errorMatrix[line]) {
-				const sourceLineLength = sourceLines[line - 1].length
+			if (!errorMatrix[currentLine]) {
+				const sourceLineLength = sourceLines[currentLine].length
 				// TODO for tab support, should fill in with matching whitespace from source line
-				errorMatrix[line] = Array(sourceLineLength).fill(' ')
+				errorMatrix[currentLine] = Array(sourceLineLength).fill(' ')
 			}
 
+			const endColumnForThisLine =
+				currentLine === endLine ? endColumn : sourceLines[currentLine].length
+
 			do {
-				errorMatrix[line][column - 1] = '~'
-				column++
-			} while (column < endColumn)
-			line++
-		} while (line < endLine)
+				errorMatrix[currentLine][currentColumn] = '~'
+				currentColumn++
+			} while (currentColumn < endColumnForThisLine)
+			currentLine++
+			currentColumn = 0
+		} while (currentLine < endLine + 1)
 	})
 
 	const interleaved = sourceLines.reduce<string[]>((result, nextLine, index) => {
-		const errorLine = errorMatrix[index + 1]
+		const errorLine = errorMatrix[index]
 		if (errorLine) {
 			return [...result, nextLine, errorLine.join('')]
 		}
