@@ -42,7 +42,7 @@ export function run(options: RunOptions) {
 			}
 
 			const result = linter.verify(entry.testSource, config, entry.fileName)
-			const formatted = getSnapshottableOutput(result, entry.fileName, entry.testSource)
+			const formatted = getSnapshottableOutput(result, entry.testSource)
 			expect(formatted).toMatchSnapshot()
 		})
 	})
@@ -54,8 +54,8 @@ interface FixtureEntry {
 	testSource: string
 }
 
-const knownTags = ['test', 'filename'] as const;
-type KnownTags = typeof knownTags[number];
+const knownTags = ['test', 'filename'] as const
+type KnownTags = typeof knownTags[number]
 
 function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	const jsDocRegex = /\/\*\*\s*\n*([^\*]|(\*(?!\/)))*\*\//gm
@@ -67,7 +67,7 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	})
 
 	let splitContent = markedContent.split(jsDocMarker)
-	const fixtureStartedWithJSDoc = splitContent[0] === ''
+	const fixtureStartedWithJSDoc = splitContent[0].trim() == ''
 	if (fixtureStartedWithJSDoc) {
 		splitContent = splitContent.slice(1)
 	} else {
@@ -84,7 +84,7 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 		}
 
 		for (const instruction of parsedBlock.tags) {
-			const tag = instruction.tag?.toLowerCase() as KnownTags;
+			const tag = instruction.tag?.toLowerCase() as KnownTags
 			switch (tag) {
 				case 'test':
 					entry.testName = instruction.name + ' ' + instruction.description
@@ -93,8 +93,10 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 					entry.fileName = instruction.name
 					continue
 				default:
-					const supported = knownTags.join(', ');
-					console.warn(`Unrecognized tag '@${instruction.tag}' in fixture JSDoc. Supported tags: ${supported}`)
+					const supported = knownTags.join(', ')
+					console.warn(
+						`Unrecognized tag '@${instruction.tag}' in fixture JSDoc. Supported tags: ${supported}`
+					)
 			}
 		}
 
@@ -104,11 +106,7 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	return result
 }
 
-function getSnapshottableOutput(
-	messages: Linter.LintMessage[],
-	filePath: string,
-	source: string
-) {
+function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) {
 	const sourceLines = source.split('\n')
 	const errorMatrix = [] as string[][]
 	messages.forEach((message) => {
@@ -117,6 +115,7 @@ function getSnapshottableOutput(
 		do {
 			if (!errorMatrix[line]) {
 				const sourceLineLength = sourceLines[line - 1].length
+				// TODO for tab support, should fill in with matching whitespace from source line
 				errorMatrix[line] = Array(sourceLineLength).fill(' ')
 			}
 
