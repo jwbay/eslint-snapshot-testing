@@ -13,7 +13,6 @@ interface RunOptions {
 	// TODOS
 	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
-	// set up CI
 	// set up semantic release
 }
 
