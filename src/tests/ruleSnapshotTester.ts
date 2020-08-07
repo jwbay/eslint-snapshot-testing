@@ -11,7 +11,6 @@ interface RunOptions {
 	// TODO probably accept base config here
 
 	// TODOS
-	// tab support in fixtures
 	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
 	// remove tslib
@@ -136,9 +135,9 @@ function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) 
 		let currentColumn = startColumn
 		do {
 			if (!errorMatrix[currentLine]) {
-				const sourceLineLength = sourceLines[currentLine].length
-				// TODO for tab support, should fill in with matching whitespace from source line
-				errorMatrix[currentLine] = Array(sourceLineLength).fill(' ')
+				errorMatrix[currentLine] = sourceLines[currentLine]
+					.split('')
+					.map((char) => (/\s/.test(char) ? char : ' '))
 			}
 
 			const endColumnForThisLine =

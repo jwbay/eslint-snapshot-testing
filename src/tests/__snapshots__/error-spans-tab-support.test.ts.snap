@@ -1,0 +1,31 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should lint correctly 1`] = `
+"// should handle indented single line errors
+function nestedFoo() {
+	let somethingFoo
+	    ~~~~~~~~~~~~ [1]
+}
+
+// should handle multiline errors
+class SomethingFoo3 {
+~~~~~~~~~~~~~~~~~~~~~ [2]
+	bar() {}
+~~~~~~~~~ [2]
+}
+~ [2]
+
+// should handle indented multiline errors
+function nested4() {
+	class NestedFoo {
+	~~~~~~~~~~~~~~~~~ [3]
+		bar() {}
+~~~~~~~~~~ [3]
+	}
+~~ [3]
+}
+
+[1] variable name 'somethingFoo' should not include foo.
+[2] class name 'SomethingFoo3' should not include foo.
+[3] class name 'NestedFoo' should not include foo."
+`;
