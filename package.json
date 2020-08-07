@@ -6,6 +6,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch --preserveWatchOutput",
+    "lint": "prettier . --check",
+    "format": "prettier . --write",
     "test": "jest"
   },
   "repository": {
@@ -22,6 +24,7 @@
     "eslint": "^7.0.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.11.0",
     "@babel/preset-env": "^7.11.0",
     "@babel/preset-typescript": "^7.10.4",
     "@types/eslint": "^7.2.0",

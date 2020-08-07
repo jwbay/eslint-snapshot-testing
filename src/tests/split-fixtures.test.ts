@@ -2,7 +2,7 @@ import { runFixture } from '../ruleSnapshotTester'
 import rule from './rules/camel-case-local-functions'
 import { RuleTester } from 'eslint'
 
- new RuleTester({}).run('wat', rule, {
+new RuleTester({}).run('wat', rule, {
 	valid: [
 		{
 			code: `
