@@ -1,6 +1,6 @@
 {
   "name": "eslint-snapshot-rule-tester",
-  "version": "0.1.0",
+  "version": "0.0.0",
   "description": "Jest snapshot testing for ESLint rules",
   "main": "dist/index.js",
   "scripts": {
@@ -12,7 +12,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "TBD"
+    "url": "git@github.com:jwbay/eslint-snapshot-testing.git"
   },
   "keywords": [
     "eslint",
@@ -34,6 +34,7 @@
     "eslint": "^7.6.0",
     "jest": "^26.2.2",
     "prettier": "^2.0.5",
+    "semantic-release": "^17.1.1",
     "typescript": "^3.9.7"
   },
   "dependencies": {

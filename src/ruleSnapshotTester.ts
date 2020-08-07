@@ -13,7 +13,6 @@ interface RunOptions {
 	// TODOS
 	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
-	// set up semantic release
 }
 
 export function runFixture(options: RunOptions) {
