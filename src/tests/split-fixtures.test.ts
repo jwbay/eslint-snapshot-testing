@@ -27,5 +27,4 @@ new RuleTester({}).run('wat', rule, {
 runFixture({
 	rule,
 	ruleName: 'split-fixtures',
-	testDirectory: __dirname,
 })

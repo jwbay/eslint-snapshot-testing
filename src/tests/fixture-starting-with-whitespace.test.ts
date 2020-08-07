@@ -4,5 +4,4 @@ import rule from './rules/camel-case-local-functions'
 runFixture({
 	rule,
 	ruleName: 'fixture-starting-with-whitespace',
-	testDirectory: __dirname,
 })

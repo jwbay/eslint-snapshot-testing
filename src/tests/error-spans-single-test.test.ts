@@ -4,5 +4,4 @@ import { noFooAllowed } from './rules/no-foo-allowed'
 runFixture({
 	rule: noFooAllowed,
 	ruleName: 'error-spans-single-test',
-	testDirectory: __dirname,
 })

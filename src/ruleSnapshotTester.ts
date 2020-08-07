@@ -1,25 +1,34 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { Linter, Rule } from 'eslint'
+import { getFixtureDirectory } from './inferTestDirectory'
 const commentParser: typeof import('comment-parser') = require('comment-parser')
 
-interface RunOptions {
+interface RunFixtureOptions {
 	rule: Rule.RuleModule
 	ruleName: string
-	// TODO infer path from new Error().stack
-	testDirectory: string
+	/**
+	 * Used to locate fixtures. Inference is attempted to look up the directory of
+	 * the calling test, but if this fails, pass `__dirname` here explicitly.
+	 */
+	fixtureDirectory?: string
 	// TODO probably accept base config here
 
 	// TODOS
+	// __fixtures__ support
 	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
 }
 
-export function runFixture(options: RunOptions) {
-	const fixtureFileName = fs.readdirSync(options.testDirectory).find((entry) => {
+export function runFixture({
+	rule,
+	ruleName,
+	fixtureDirectory = getFixtureDirectory(new Error('getFixtureDirectory')),
+}: RunFixtureOptions) {
+	const fixtureFileName = fs.readdirSync(fixtureDirectory).find((entry) => {
 		const extension = path.extname(entry)
 		const name = entry.replace(new RegExp(extension + '$'), '')
-		return name === options.ruleName || name === options.ruleName + '.fixture'
+		return name === ruleName || name === ruleName + '.fixture'
 	})
 
 	if (!fixtureFileName) {
@@ -28,18 +37,18 @@ export function runFixture(options: RunOptions) {
 	}
 
 	const fixtureSource = fs
-		.readFileSync(path.join(options.testDirectory, fixtureFileName), 'utf8')
+		.readFileSync(path.join(fixtureDirectory, fixtureFileName), 'utf8')
 		.replace(/\r\n/g, '\n')
 	const tests = parseFixture(fixtureSource, fixtureFileName)
 	tests.forEach((entry) => {
 		test(entry.testName, async () => {
 			const linter = new Linter({})
-			linter.defineRule(options.ruleName, options.rule)
+			linter.defineRule(ruleName, rule)
 			const result = linter.verify(
 				entry.testSource,
 				{
 					rules: {
-						[options.ruleName]: 1 as const,
+						[ruleName]: 1 as const,
 					},
 					// TODO configurable
 					parserOptions: {
