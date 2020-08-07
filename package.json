@@ -1,8 +1,8 @@
 {
-  "name": "eslint-plugin-misc-rules",
-  "version": "0.0.0",
-  "description": "Collection of miscellaneous ESLint rules",
-  "main": "index.js",
+  "name": "eslint-snapshot-rule-tester",
+  "version": "0.1.0",
+  "description": "Jest snapshot testing for ESLint rules",
+  "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch --preserveWatchOutput",
@@ -19,7 +19,7 @@
   "author": "justin.bay@outlook.com",
   "license": "MIT",
   "peerDependencies": {
-    "eslint": "^7.6.0"
+    "eslint": "^7.0.0"
   },
   "devDependencies": {
     "@babel/preset-env": "^7.11.0",
@@ -34,7 +34,6 @@
     "typescript": "^3.9.7"
   },
   "dependencies": {
-    "comment-parser": "^0.7.5",
-    "tslib": "^2.0.0"
+    "comment-parser": "^0.7.5"
   }
 }

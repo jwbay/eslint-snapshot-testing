@@ -13,12 +13,11 @@ interface RunOptions {
 	// TODOS
 	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
-	// remove tslib
 	// set up CI
 	// set up semantic release
 }
 
-export function run(options: RunOptions) {
+export function runFixture(options: RunOptions) {
 	const fixtureFileName = fs.readdirSync(options.testDirectory).find((entry) => {
 		const extension = path.extname(entry)
 		const name = entry.replace(new RegExp(extension + '$'), '')
@@ -52,8 +51,8 @@ export function run(options: RunOptions) {
 				},
 				entry.fileName
 			)
-			const formatted = getSnapshottableOutput(result, entry.testSource)
-			expect(formatted).toMatchSnapshot()
+			const serialized = serializeLintFailuresForSnapshot(result, entry.testSource)
+			expect(serialized).toMatchSnapshot()
 		})
 	})
 }
@@ -116,19 +115,25 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	return result
 }
 
-function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) {
-	const sourceLines = source.split('\n')
+function serializeLintFailuresForSnapshot(
+	lintMessages: Linter.LintMessage[],
+	lintedSource: string
+) {
+	const sourceLines = lintedSource.split('\n')
 	const errorMatrix: string[][] = []
 	const uniqueMessages: string[] = []
-	messages.forEach((message) => {
-		const startLine = message.line - 1
-		const endLine = message.endLine == null ? startLine : message.endLine - 1
-		const startColumn = message.column - 1
-		const endColumn = message.endColumn == null ? startColumn : message.endColumn - 1
 
-		let messageId = uniqueMessages.indexOf(message.message) + 1
+	lintMessages.forEach((lintMessage) => {
+		// ESLint line & column are 1-indexed for better IDE integration, but 0 works
+		// better for us here
+		const startLine = lintMessage.line - 1
+		const endLine = lintMessage.endLine == null ? startLine : lintMessage.endLine - 1
+		const startColumn = lintMessage.column - 1
+		const endColumn = lintMessage.endColumn == null ? startColumn : lintMessage.endColumn - 1
+
+		let messageId = uniqueMessages.indexOf(lintMessage.message) + 1
 		if (messageId === 0) {
-			messageId = uniqueMessages.push(message.message)
+			messageId = uniqueMessages.push(lintMessage.message)
 		}
 
 		let currentLine = startLine
@@ -137,6 +142,8 @@ function getSnapshottableOutput(messages: Linter.LintMessage[], source: string) 
 			if (!errorMatrix[currentLine]) {
 				errorMatrix[currentLine] = sourceLines[currentLine]
 					.split('')
+					// need to preserve existing whitespace (tab characters) when allocating a new error line
+					// to avoid indentation issues
 					.map((char) => (/\s/.test(char) ? char : ' '))
 			}
 

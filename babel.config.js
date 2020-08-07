@@ -1,4 +1,4 @@
-// babel.config.js
+// only used for TS support in Jest
 module.exports = {
 	presets: [
 		[

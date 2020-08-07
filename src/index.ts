@@ -1,0 +1,1 @@
+export { runFixture } from './ruleSnapshotTester'

@@ -1,7 +1,7 @@
-import { run } from './ruleSnapshotTester'
-import rule from '../rules/camel-case-local-functions'
+import { runFixture } from '../ruleSnapshotTester'
+import rule from './rules/camel-case-local-functions'
 
-run({
+runFixture({
 	rule,
 	ruleName: 'fixture-starting-with-whitespace',
 	testDirectory: __dirname,

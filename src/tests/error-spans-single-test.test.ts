@@ -1,7 +1,7 @@
-import { run } from './ruleSnapshotTester'
-import { noFooAllowed } from '../rules/no-foo-allowed'
+import { runFixture } from '../ruleSnapshotTester'
+import { noFooAllowed } from './rules/no-foo-allowed'
 
-run({
+runFixture({
 	rule: noFooAllowed,
 	ruleName: 'error-spans-single-test',
 	testDirectory: __dirname,
