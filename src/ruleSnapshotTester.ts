@@ -5,11 +5,38 @@ import { getFixtureDirectory } from './inferTestDirectory'
 const commentParser: typeof import('comment-parser') = require('comment-parser')
 
 interface RunFixtureOptions {
+	/**
+	 * The rule object, with 'create' and 'meta' properties.
+	 *
+	 * @example
+	 *
+	 * runFixture({
+	 *   ...
+	 *   rule: require('../rules/my-custom-rule')
+	 * })
+	 */
 	rule: Rule.RuleModule
+	/**
+	 * The rule name. Used for test names and to locate fixtures.
+	 *
+	 * @example
+	 *
+	 * runFixture({
+	 *   ...
+	 *   rulename: 'my-rule-name'
+	 * })
+	 */
 	ruleName: string
 	/**
-	 * Used to locate fixtures. Inference is attempted to look up the directory of
+	 * Used to locate fixtures. An attempt is made to infer the directory of
 	 * the calling test, but if this fails, pass `__dirname` here explicitly.
+	 *
+	 * @example
+	 *
+	 * runFixture({
+	 *   ...
+	 *   fixtureDirectory: __dirname
+	 * })
 	 */
 	fixtureDirectory?: string
 	// TODO probably accept base config here
