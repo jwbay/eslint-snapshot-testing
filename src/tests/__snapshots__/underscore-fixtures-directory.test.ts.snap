@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should lint correctly 1`] = `
+"function UnderscoreFixtureLocation() {
+}
+
+UnderscoreFixtureLocation()
+~~~~~~~~~~~~~~~~~~~~~~~~~   [1]
+
+[1] local function names should be camelCase"
+`;

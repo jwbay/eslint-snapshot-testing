@@ -15,31 +15,26 @@ interface RunFixtureOptions {
 	// TODO probably accept base config here
 
 	// TODOS
-	// __fixtures__ support
 	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
 }
 
+const __fixtures__ = '__fixtures__'
 export function runFixture({
 	rule,
 	ruleName,
 	fixtureDirectory = getFixtureDirectory(new Error('getFixtureDirectory')),
 }: RunFixtureOptions) {
-	const fixtureFileName = fs.readdirSync(fixtureDirectory).find((entry) => {
-		const extension = path.extname(entry)
-		const name = entry.replace(new RegExp(extension + '$'), '')
-		return name === ruleName || name === ruleName + '.fixture'
-	})
+	const fixtureFile =
+		findFixtureFile(ruleName, fixtureDirectory) ||
+		findFixtureFile(ruleName, path.join(fixtureDirectory, __fixtures__))
 
-	if (!fixtureFileName) {
-		console.warn('Could not find fixture')
-		return
+	if (!fixtureFile) {
+		throw new Error(getFixtureDirectoryError(ruleName, fixtureDirectory))
 	}
 
-	const fixtureSource = fs
-		.readFileSync(path.join(fixtureDirectory, fixtureFileName), 'utf8')
-		.replace(/\r\n/g, '\n')
-	const tests = parseFixture(fixtureSource, fixtureFileName)
+	const fixtureSource = fs.readFileSync(fixtureFile, 'utf8').replace(/\r\n/g, '\n')
+	const tests = parseFixture(fixtureSource, fixtureFile)
 	tests.forEach((entry) => {
 		test(entry.testName, async () => {
 			const linter = new Linter({})
@@ -64,6 +59,29 @@ export function runFixture({
 	})
 }
 
+function findFixtureFile(ruleName: string, directory: string) {
+	const foundFile = fs.readdirSync(directory).find((entry) => {
+		const extension = path.extname(entry)
+		const name = entry.replace(new RegExp(extension + '$'), '')
+		return name === ruleName || name === ruleName + '.fixture'
+	})
+
+	if (foundFile) {
+		return path.join(directory, foundFile)
+	}
+}
+
+function getFixtureDirectoryError(ruleName: string, fixtureDirectory: string) {
+	return `Could not find fixture for the rule ${ruleName}.
+Looked for:
+${ruleName}.fixture
+${ruleName}.fixture.[any extension]
+
+under the following directories:
+${fixtureDirectory}
+${path.join(fixtureDirectory, __fixtures__)}`
+}
+
 interface FixtureEntry {
 	testName: string
 	fileName: string
@@ -74,6 +92,7 @@ const knownTags = ['test', 'filename'] as const
 type KnownTags = typeof knownTags[number]
 
 function parseFixture(fixtureContent: string, fixtureFileName: string) {
+	const fixtureFile = path.basename(fixtureFileName)
 	const jsDocRegex = /\/\*\*\s*\n*([^\*]|(\*(?!\/)))*\*\//gm
 	const jsDocMarker = '/**<jsdoc>*/'
 	const jsDocs: string[] = []
@@ -96,7 +115,7 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 		const entry: FixtureEntry = {
 			testSource: testSourceCode,
 			testName: 'should lint correctly',
-			fileName: fixtureFileName,
+			fileName: fixtureFile,
 		}
 
 		for (const instruction of parsedBlock.tags) {
