@@ -1,0 +1,9 @@
+/.github
+/.vscode
+/src
+/dist/tests
+/coverage
+.prettierignore
+*.config.js
+tsconfig.json
+/yarn*
