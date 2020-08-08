@@ -57,11 +57,12 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 		let currentColumn = startColumn
 		do {
 			if (!errorMatrix[currentLine]) {
-				errorMatrix[currentLine] = sourceLines[currentLine]
-					.split('')
+				errorMatrix[currentLine] = sourceLines[currentLine].split('').map((char) => {
 					// need to preserve existing whitespace (tab characters) when allocating a new error line
 					// to avoid indentation issues
-					.map((char) => (/\s/.test(char) ? char : ' '))
+					const isWhitespace = !char.trim()
+					return isWhitespace ? char : ' '
+				})
 			}
 
 			const endColumnForThisLine =
@@ -81,9 +82,12 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 	const interleaved = sourceLines.reduce<string[]>((result, nextLine, index) => {
 		const errorLine = errorMatrix[index]
 		if (errorLine) {
-			return [...result, nextLine, errorLine.join('')]
+			result.push(nextLine, errorLine.join(''))
+		} else {
+			result.push(nextLine)
 		}
-		return [...result, nextLine]
+
+		return result
 	}, [])
 
 	interleaved.push(
