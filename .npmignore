@@ -1,6 +1,7 @@
 /.github
 /.vscode
 /src
+/dist/tests
 /dist/**/*.test.*
 /dist/**/*.fixture.*
 /coverage
