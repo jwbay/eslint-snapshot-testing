@@ -59,7 +59,8 @@ interface RunFixtureOptions {
 	eslintConfig?: Omit<Linter.Config, 'rules'>
 
 	// TODOS
-	// expose raw serializer somehow for scoped mocking support
+	// factor out modules
+	// write a readme
 }
 
 const __fixtures__ = '__fixtures__'
@@ -104,7 +105,10 @@ export function runFixture({
 				},
 				entry.fileName
 			)
-			const serialized = serializeLintFailuresForSnapshot(result, entry.testSource)
+			const serialized = serializeLintResult({
+				lintMessages: result,
+				lintedSource: entry.testSource,
+			})
 			expect(serialized).toMatchSnapshot()
 		})
 	})
@@ -241,10 +245,12 @@ function getTypeName(object: any) {
 	return fullName.split(' ')[1].slice(0, -1)
 }
 
-function serializeLintFailuresForSnapshot(
-	lintMessages: Linter.LintMessage[],
+interface SerializeOptions {
 	lintedSource: string
-) {
+	lintMessages: Linter.LintMessage[]
+}
+
+export function serializeLintResult({ lintedSource, lintMessages }: SerializeOptions) {
 	const sourceLines = lintedSource.split('\n')
 	const errorMatrix: string[][] = []
 	const uniqueMessages: string[] = []
