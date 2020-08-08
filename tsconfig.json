@@ -4,6 +4,7 @@
 		"module": "commonjs",
 		"sourceMap": true,
 		"inlineSources": true,
+		"declaration": true,
 		"outDir": "./dist",
 		"rootDir": "./src",
 		"strict": true,
