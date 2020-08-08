@@ -1,7 +1,7 @@
-import { runFixture } from '../ruleSnapshotTester'
+import { runLintFixtureTests } from '../ruleSnapshotTester'
 import rule from './rules/camel-case-local-functions'
 
-runFixture({
+runLintFixtureTests({
 	rule,
 	ruleName: 'fixture-starting-with-whitespace',
 })

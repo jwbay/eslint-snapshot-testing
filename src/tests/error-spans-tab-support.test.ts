@@ -1,7 +1,7 @@
-import { runFixture } from '../ruleSnapshotTester'
+import { runLintFixtureTests } from '../ruleSnapshotTester'
 import { noFooAllowed } from './rules/no-foo-allowed'
 
-runFixture({
+runLintFixtureTests({
 	rule: noFooAllowed,
 	ruleName: 'error-spans-tab-support',
 })

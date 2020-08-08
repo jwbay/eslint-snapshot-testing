@@ -75,7 +75,25 @@ const defaultLintConfig: Linter.Config = {
 	},
 }
 
-export function runFixture({
+/**
+ * Runs tests for a given rule based on a test fixture located by convention. The fixture
+ * should contain a mix of valid and invalid code. Test cases will be generated, and the
+ * lint results for the fixture code will be snapshotted by Jest.
+ * 
+ * The test fixture should be named `my-rule-name.fixture`, or `my-rule-name.fixture.{ts,js}`.
+ * It should either be in the same directory as the test, or in a `__fixtures__` directory
+ * under the test's directory.
+ * 
+ * @example
+ * import myCustomRule from '../my-custom-eslint-rule';
+ * import { runLintFixtureTests } from 'eslint-snapshot-rule-tester';
+ * 
+ * runLintFixtureTests({
+ *   rule: myCustomRule,
+ *   ruleName: 'my-custom-rule',
+ * });
+  */
+export function runLintFixtureTests({
 	rule,
 	ruleName,
 	eslintConfig = defaultLintConfig,
@@ -250,6 +268,39 @@ interface SerializeOptions {
 	lintMessages: Linter.LintMessage[]
 }
 
+/**
+ * Serializes the results from calling the ESLint `verify` API into a snapshot-friendly
+ * format. This is **not** needed when using `runLintFixtureTests`. Instead, this can be
+ * used when full control is needed over test cases, e.g. for per-test setup or mocking.
+ * 
+ * @example
+ * import myCustomRule from '../my-custom-eslint-rule';
+ * import someFunction from '../helpers/someFunction';
+ * import { serializeLintResult } from 'eslint-snapshot-rule-tester';
+ * import { Linter } from 'eslint';
+ * 
+ * test('when someFunction is false', () => {
+ *   someFunction.mockReturnValue(false);
+ *   const source = "source code to be linted";
+ *   const esLintResult = lint(source);
+ *   const serializedResult = serializeLintResult({ lintedSource: source, lintMessages: esLintResult });
+ *   expect(serializedResult).toMatchSnapshot();
+ * });
+ * 
+ * test('when someFunction is true', () => {
+ *   someFunction.mockReturnValue(true);
+ *   const source = "source code to be linted";
+ *   const esLintResult = lint(source);
+ *   const serializedResult = serializeLintResult({ lintedSource: source, lintMessages: esLintResult });
+ *   expect(serializedResult).toMatchSnapshot();
+ * });
+ * 
+ * function lint(source) {
+ *   const linter = new Linter({});
+ *   linter.defineRule('my-rule-name', myCustomRule);
+ *   return linter.verify(source, { rules: { ['my-rule-name']: 'error' } });
+ * }
+ */
 export function serializeLintResult({ lintedSource, lintMessages }: SerializeOptions) {
 	const sourceLines = lintedSource.split('\n')
 	const errorMatrix: string[][] = []

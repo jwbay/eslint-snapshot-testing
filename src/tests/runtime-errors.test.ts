@@ -1,10 +1,10 @@
-import { runFixture } from '../ruleSnapshotTester'
+import { runLintFixtureTests } from '../ruleSnapshotTester'
 import rule from './rules/camel-case-local-functions'
 
 it('should give a helpful error when unable to locate a fixture', () => {
 	let error = new Error('test failed')
 	try {
-		runFixture({
+		runLintFixtureTests({
 			rule,
 			ruleName: 'my-rule-with-missing-fixture',
 		})
@@ -35,7 +35,7 @@ it('should give a helpful error when unable to parse rule options in a fixture',
 	let error = new Error('test failed')
 	const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
 	try {
-		runFixture({
+		runLintFixtureTests({
 			rule,
 			ruleName: 'rule-options-jsdoc-parse-error',
 		})
@@ -57,7 +57,7 @@ it('should give a helpful error when unable to parse rule options in a fixture',
 it('should give a helpful error when rule options are not an array', () => {
 	let error = new Error('test failed')
 	try {
-		runFixture({
+		runLintFixtureTests({
 			rule,
 			ruleName: 'rule-options-jsdoc-not-array-value',
 		})
