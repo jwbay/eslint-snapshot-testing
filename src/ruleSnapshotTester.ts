@@ -1,9 +1,10 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import { Linter, Rule } from 'eslint'
-import { getFixtureDirectory } from './inferTestDirectory'
 import type { Tag } from 'comment-parser'
+import { getFixtureDirectory } from './inferTestDirectory'
 import { serializeLintResult } from './lintResultSerializer'
+import { findFixtureFile } from './fixtureFinder'
 const commentParser: typeof import('comment-parser') = require('comment-parser')
 
 interface RunFixtureOptions {
@@ -64,7 +65,6 @@ interface RunFixtureOptions {
 	// write a readme
 }
 
-const __fixtures__ = '__fixtures__'
 const defaultLintConfig: Linter.Config = {
 	parserOptions: {
 		ecmaVersion: 2020,
@@ -100,16 +100,9 @@ export function runLintFixtureTests({
 	eslintConfig = defaultLintConfig,
 	fixtureDirectory = getFixtureDirectory(new Error('getFixtureDirectory')),
 }: RunFixtureOptions) {
-	const fixtureFile =
-		findFixtureFile(ruleName, fixtureDirectory) ||
-		findFixtureFile(ruleName, path.join(fixtureDirectory, __fixtures__))
-
-	if (!fixtureFile) {
-		throw new Error(getFixtureDirectoryError(ruleName, fixtureDirectory))
-	}
-
-	const fixtureSource = fs.readFileSync(fixtureFile, 'utf8').replace(/\r\n/g, '\n')
-	const tests = parseFixture(fixtureSource, fixtureFile)
+	const fixturePath = findFixtureFile(ruleName, fixtureDirectory)
+	const fixtureSource = fs.readFileSync(fixturePath, 'utf8').replace(/\r\n/g, '\n')
+	const tests = parseFixture(fixtureSource, fixturePath)
 	tests.forEach((entry) => {
 		test(entry.testName, () => {
 			const linter = new Linter({})
@@ -133,29 +126,6 @@ export function runLintFixtureTests({
 	})
 }
 
-function findFixtureFile(ruleName: string, directory: string) {
-	const foundFile = fs.readdirSync(directory).find((entry) => {
-		const extension = path.extname(entry)
-		const name = entry.replace(new RegExp(extension + '$'), '')
-		return name === ruleName || name === ruleName + '.fixture'
-	})
-
-	if (foundFile) {
-		return path.join(directory, foundFile)
-	}
-}
-
-function getFixtureDirectoryError(ruleName: string, fixtureDirectory: string) {
-	return `Could not find fixture for the rule ${ruleName}.
-Looked for:
-${ruleName}.fixture
-${ruleName}.fixture.[any extension]
-
-under the following directories:
-${fixtureDirectory}
-${path.join(fixtureDirectory, __fixtures__)}`
-}
-
 interface FixtureEntry {
 	testName: string
 	fileName: string
@@ -166,8 +136,8 @@ interface FixtureEntry {
 const knownTags = ['test', 'filename', 'ruleOptions'] as const
 type KnownTags = typeof knownTags[number]
 
-function parseFixture(fixtureContent: string, fixtureFileName: string) {
-	const fixtureFile = path.basename(fixtureFileName)
+function parseFixture(fixtureContent: string, fixturePath: string) {
+	const fixtureFile = path.basename(fixturePath)
 	const jsDocRegex = /\/\*\*\s*\n*([^\*]|(\*(?!\/)))*\*\//gm
 	const jsDocMarker = '/**<jsdoc>*/'
 	const jsDocs: string[] = []
