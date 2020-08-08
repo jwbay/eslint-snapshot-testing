@@ -1,1 +1,2 @@
-export { runLintFixtureTests, serializeLintResult } from './ruleSnapshotTester'
+export { runLintFixtureTests } from './ruleSnapshotTester'
+export { serializeLintResult } from './lintResultSerializer'

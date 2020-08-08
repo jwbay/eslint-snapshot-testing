@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`serializeLintResult supports per-test setup and mocking for lint rules should have errors 1`] = `
+"
+const foo = 'something';
+      ~~~~~~~~~~~~~~~~~  [1]
+[1] variables named foo are not allowed when working directory is /bar"
+`;
+
+exports[`serializeLintResult supports per-test setup and mocking for lint rules should not have errors 1`] = `
+"
+const foo = 'something';"
+`;
