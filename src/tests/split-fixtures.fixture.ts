@@ -21,3 +21,11 @@ ShouldFail()
 function ShouldPass() {}
 
 ShouldPass()
+
+/**
+ * @test should ignore .tsx files with spaces
+ * @filename some other file.tsx
+ */
+function ShouldAlsoPass() {}
+
+ShouldAlsoPass()

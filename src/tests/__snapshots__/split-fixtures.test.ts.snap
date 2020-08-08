@@ -21,6 +21,15 @@ exports[`should ignore .tsx files 1`] = `
 function ShouldPass() {}
 
 ShouldPass()
+
+"
+`;
+
+exports[`should ignore .tsx files with spaces 1`] = `
+"
+function ShouldAlsoPass() {}
+
+ShouldAlsoPass()
 "
 `;
 

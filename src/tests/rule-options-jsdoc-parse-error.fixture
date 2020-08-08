@@ -1,0 +1,5 @@
+/**
+ * @test single option value
+ * @ruleOptions this is not valid JSON
+ */
+import okay from 'okay'

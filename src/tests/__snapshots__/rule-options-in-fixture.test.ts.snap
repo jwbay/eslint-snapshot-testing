@@ -1,0 +1,85 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`multiple option values 1`] = `
+"
+import fails from 'forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+import okay from 'okay'
+import fails2 from 'also forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+
+
+[1] 'forbidden' import is restricted from being used.
+[2] 'also forbidden' import is restricted from being used."
+`;
+
+exports[`multiple values across lines with following tag 1`] = `
+"
+import okay from 'okay'
+import fails from 'forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+
+
+[1] 'forbidden' import is restricted from being used."
+`;
+
+exports[`multiple values across lines with leading * 1`] = `
+"
+import okay from 'okay'
+import fails from 'forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+import fails2 from 'also forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+
+
+[1] 'forbidden' import is restricted from being used.
+[2] 'also forbidden' import is restricted from being used."
+`;
+
+exports[`multiple values across lines without leading * 1`] = `
+"
+import okay from 'okay'
+import fails from 'forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+import fails2 from 'also forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]
+
+
+[1] 'forbidden' import is restricted from being used.
+[2] 'also forbidden' import is restricted from being used."
+`;
+
+exports[`object options 1`] = `
+"
+import okay from 'okay'
+import fails from 'cluster'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+
+
+[1] 'cluster' import is restricted from being used."
+`;
+
+exports[`object options across lines 1`] = `
+"
+import DisallowedObject from 'foo';
+       ~~~~~~~~~~~~~~~~             [1]
+
+[1] 'default' import from 'foo' is restricted. Please use the default import from '/bar/baz/' instead."
+`;
+
+exports[`single option value 1`] = `
+"
+import okay from 'okay'
+import fails from 'forbidden'
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+
+
+[1] 'forbidden' import is restricted from being used."
+`;
+
+exports[`works without rule options 1`] = `
+"
+import okay from 'okay'
+
+"
+`;

@@ -1,0 +1,67 @@
+/** @test works without rule options */
+import okay from 'okay'
+
+/**
+ * @test single option value
+ * @ruleOptions ["forbidden"]
+ */
+import okay from 'okay'
+import fails from 'forbidden'
+
+/**
+ * @test multiple option values
+ * @ruleOptions ["forbidden", "also forbidden"]
+ */
+import fails from 'forbidden'
+import okay from 'okay'
+import fails2 from 'also forbidden'
+
+/**
+ * @test multiple values across lines with leading *
+ * @ruleOptions [
+ *   "forbidden",
+ *   "also forbidden"
+ * ]
+ */
+import okay from 'okay'
+import fails from 'forbidden'
+import fails2 from 'also forbidden'
+
+/**
+ * @test multiple values across lines without leading *
+ * @ruleOptions [
+     "forbidden",
+     "also forbidden"
+   ]
+ */
+import okay from 'okay'
+import fails from 'forbidden'
+import fails2 from 'also forbidden'
+
+/**
+ * @test multiple values across lines with following tag
+ * @ruleOptions [
+ *   "forbidden",
+ *   "also forbidden"
+ * ]
+ * @filename doesn't matter
+ */
+import okay from 'okay'
+import fails from 'forbidden'
+
+/**
+ * @test object options
+ * @ruleOptions [{ "paths": ["cluster"] }]
+ */
+import okay from 'okay'
+import fails from 'cluster'
+
+/**
+ * @test object options across lines
+ * @ruleOptions [{ "paths": [{
+        "name": "foo",
+        "importNames": ["default"],
+        "message": "Please use the default import from '/bar/baz/' instead."
+    }]}]
+*/
+import DisallowedObject from 'foo';

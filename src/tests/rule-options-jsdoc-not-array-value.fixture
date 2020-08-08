@@ -1,0 +1,5 @@
+/**
+ * @test single option value
+ * @ruleOptions 42
+ */
+import okay from 'okay'

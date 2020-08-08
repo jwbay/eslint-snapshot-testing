@@ -2,6 +2,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import { Linter, Rule } from 'eslint'
 import { getFixtureDirectory } from './inferTestDirectory'
+import type { Tag } from 'comment-parser'
 const commentParser: typeof import('comment-parser') = require('comment-parser')
 
 interface RunFixtureOptions {
@@ -42,7 +43,6 @@ interface RunFixtureOptions {
 	// TODO probably accept base config here
 
 	// TODOS
-	// option support in fixtures (maybe)
 	// expose raw serializer somehow for scoped mocking support
 }
 
@@ -70,7 +70,7 @@ export function runFixture({
 				entry.testSource,
 				{
 					rules: {
-						[ruleName]: 1 as const,
+						[ruleName]: entry.ruleOptions ? ['error', ...entry.ruleOptions] : 'error',
 					},
 					// TODO configurable
 					parserOptions: {
@@ -113,9 +113,10 @@ interface FixtureEntry {
 	testName: string
 	fileName: string
 	testSource: string
+	ruleOptions?: any[]
 }
 
-const knownTags = ['test', 'filename'] as const
+const knownTags = ['test', 'filename', 'ruleOptions'] as const
 type KnownTags = typeof knownTags[number]
 
 function parseFixture(fixtureContent: string, fixtureFileName: string) {
@@ -152,7 +153,11 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 					entry.testName = instruction.name + ' ' + instruction.description
 					continue
 				case 'filename':
-					entry.fileName = instruction.name
+					entry.fileName = instruction.name + ' ' + (instruction.description ?? '')
+					entry.fileName = entry.fileName.trim()
+					continue
+				case 'ruleoptions' as string:
+					entry.ruleOptions = parseRuleOptionsFromJSDoc(instruction)
 					continue
 				default:
 					const supported = knownTags.join(', ')
@@ -166,6 +171,50 @@ function parseFixture(fixtureContent: string, fixtureFileName: string) {
 	})
 
 	return result
+}
+
+function parseRuleOptionsFromJSDoc(instruction: Tag) {
+	// comment-parser strips wrapping array brackets, but we need them preserved (and required)
+	// to avoid ambiguity. ESLint config allows 'spread' options for rules, e.g.:
+	// 	my-rule: ['error', 'something', 'something else']
+	// but it also supports arrays as a single option, e.g.:
+	// 	my-rule: ['error', ['something', 'something else']]
+	const ruleOptionSource = instruction.source.replace('@' + instruction.tag, '').trim()
+	let parsedOptions: any[]
+	try {
+		parsedOptions = JSON.parse(ruleOptionSource)
+	} catch (parseError) {
+		console.warn(`
+Could not parse option JSON from fixture.
+Source:
+${ruleOptionSource}
+`)
+		throw parseError
+	}
+
+	if (!Array.isArray(parsedOptions)) {
+		const typeName = getTypeName(parsedOptions).toLowerCase()
+		throw new Error(`Rule options are required to be an array to avoid ambiguity.
+Received type: ${typeName}
+
+For this example ESLint rule configuration:
+    my-rule-name: ["error", "first configuration value", { otherConfig: 42 }]
+the corresponding JSDoc entry should be:
+	/** @ruleOptions ["first configuration value", { otherConfig: 42 }] */
+
+Or for this example configuration:
+    my-other-rule-name: ["error", ["first", "second"]]
+the corresponding JSDoc entry should be:
+    /** @ruleOptions [["first", "second"]]
+`)
+	}
+
+	return parsedOptions
+}
+
+function getTypeName(object: any) {
+	const fullName: string = Object.prototype.toString.call(object)
+	return fullName.split(' ')[1].slice(0, -1)
 }
 
 function serializeLintFailuresForSnapshot(
