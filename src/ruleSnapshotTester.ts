@@ -40,16 +40,44 @@ interface RunFixtureOptions {
 	 * })
 	 */
 	fixtureDirectory?: string
-	// TODO probably accept base config here
+	/**
+	 * Use this to set parser options for the rule being tested. These are
+	 * permissive by default.
+	 *
+	 * @example
+	 *
+	 * runFixture({
+	 *   ...
+	 *   eslintConfig: {
+	 *     parserOptions: {
+	 *       ecmaVersion: 2020,
+	 *       sourceType: 'module',
+	 *     }
+	 *   }
+	 * })
+	 */
+	eslintConfig?: Omit<Linter.Config, 'rules'>
 
 	// TODOS
 	// expose raw serializer somehow for scoped mocking support
 }
 
 const __fixtures__ = '__fixtures__'
+const defaultLintConfig: Linter.Config = {
+	parserOptions: {
+		ecmaVersion: 2020,
+		sourceType: 'module',
+		ecmaFeatures: {
+			globalReturn: true,
+			jsx: true,
+		},
+	},
+}
+
 export function runFixture({
 	rule,
 	ruleName,
+	eslintConfig = defaultLintConfig,
 	fixtureDirectory = getFixtureDirectory(new Error('getFixtureDirectory')),
 }: RunFixtureOptions) {
 	const fixtureFile =
@@ -63,19 +91,15 @@ export function runFixture({
 	const fixtureSource = fs.readFileSync(fixtureFile, 'utf8').replace(/\r\n/g, '\n')
 	const tests = parseFixture(fixtureSource, fixtureFile)
 	tests.forEach((entry) => {
-		test(entry.testName, async () => {
+		test(entry.testName, () => {
 			const linter = new Linter({})
 			linter.defineRule(ruleName, rule)
 			const result = linter.verify(
 				entry.testSource,
 				{
+					...eslintConfig,
 					rules: {
 						[ruleName]: entry.ruleOptions ? ['error', ...entry.ruleOptions] : 'error',
-					},
-					// TODO configurable
-					parserOptions: {
-						ecmaVersion: 2015,
-						sourceType: 'module',
 					},
 				},
 				entry.fileName
