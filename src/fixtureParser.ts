@@ -47,7 +47,7 @@ export function parseFixture(fixtureContent: string, fixturePath: string) {
 					entry.testName = instruction.name + ' ' + instruction.description
 					continue
 				case 'filename':
-					entry.fileName = instruction.name + ' ' + (instruction.description ?? '')
+					entry.fileName = instruction.name + ' ' + instruction.description
 					entry.fileName = entry.fileName.trim()
 					continue
 				case 'ruleoptions' as string:

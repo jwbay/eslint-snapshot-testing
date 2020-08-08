@@ -26,8 +26,6 @@ function parseNodeStacktrace(stackString: string) {
 	interface ParsedLine {
 		file: string
 		methodName: string
-		lineNumber: number
-		column: number | null
 	}
 
 	const nodeRe = /^\s*at (?:((?:\[object object\])?[^\\/]+(?: \[as \S+\])?) )?\(?(.*?):(\d+)(?::(\d+))?\)?\s*$/i
@@ -52,8 +50,6 @@ function parseNodeStacktrace(stackString: string) {
 		return {
 			file: parts[2],
 			methodName: parts[1] || '<unknown>',
-			lineNumber: +parts[3],
-			column: parts[4] ? +parts[4] : null,
 		}
 	}
 }

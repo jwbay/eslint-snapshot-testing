@@ -1,6 +1,16 @@
 import { runLintFixtureTests } from '../ruleSnapshotTester'
 import rule from './rules/camel-case-local-functions'
 
+let consoleWarn: jest.SpyInstance
+
+beforeEach(() => {
+	consoleWarn = jest.spyOn(console, 'warn')
+})
+
+afterEach(() => {
+	consoleWarn.mockRestore()
+})
+
 it('should give a helpful error when unable to locate a fixture', () => {
 	let error = new Error('test failed')
 	try {
@@ -32,8 +42,8 @@ it('should give a helpful error when unable to locate a fixture', () => {
 })
 
 it('should give a helpful error when unable to parse rule options in a fixture', () => {
+	consoleWarn.mockImplementation(() => {})
 	let error = new Error('test failed')
-	const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {})
 	try {
 		runLintFixtureTests({
 			rule,
@@ -43,8 +53,7 @@ it('should give a helpful error when unable to parse rule options in a fixture',
 		error = e
 	}
 
-	const warning = warnSpy.mock.calls[0][0].toLowerCase().trim()
-	warnSpy.mockRestore()
+	const warning = consoleWarn.mock.calls[0][0].toLowerCase().trim()
 	const errorMessage = error.message.toLowerCase().trim()
 	expect(warning).toMatchInlineSnapshot(`
 		"could not parse option json from fixture.
@@ -80,4 +89,22 @@ it('should give a helpful error when rule options are not an array', () => {
 		the corresponding jsdoc entry should be:
 		    /** @ruleoptions [[\\"first\\", \\"second\\"]]"
 	`)
+})
+
+it('should give a helpful warning when encountering an unsupported jsdoc tag in a fixture', () => {
+	consoleWarn.mockImplementation(() => {})
+	try {
+		runLintFixtureTests({
+			rule,
+			ruleName: 'unsupported-jsdoc',
+		})
+	} catch {
+		// the actual generated test will fail to run because it's nested in this one,
+		// but we will have already printed the warning from parsing the fixture
+	}
+
+	const warning = consoleWarn.mock.calls[0][0].trim()
+	expect(warning).toMatchInlineSnapshot(
+		`"Unrecognized tag '@something' in fixture JSDoc. Supported tags: test, filename, ruleOptions"`
+	)
 })

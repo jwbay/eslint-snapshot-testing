@@ -72,3 +72,17 @@ it('should error if path is determined not to be absolute', () => {
 
 	expect(() => getFixtureDirectory(error)).toThrowError(expectedError)
 })
+
+it('should error if stack is missing', () => {
+	const error = new Error('test')
+	delete error.stack
+	expect(() => getFixtureDirectory(error)).toThrowError(expectedError)
+})
+
+it('should error if stack is only one line', () => {
+	const error = new Error('test')
+	error.stack = `Error: test
+    at runFixture (/x/rootdir/src/ruleSnapshotTester.ts:26:41)`
+
+	expect(() => getFixtureDirectory(error)).toThrowError(expectedError)
+})

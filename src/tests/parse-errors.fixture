@@ -1,0 +1,5 @@
+let x = 42;
+
+this is not valid javascript
+
+x = 5;

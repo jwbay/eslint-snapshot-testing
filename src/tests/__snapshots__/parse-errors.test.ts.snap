@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should lint correctly 1`] = `
+"let x = 42;
+
+this is not valid javascript
+     ~                       [1]
+
+x = 5;
+
+[1] Parsing error: Unexpected token is"
+`;

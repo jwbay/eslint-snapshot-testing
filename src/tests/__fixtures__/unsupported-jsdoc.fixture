@@ -1,0 +1,5 @@
+/**
+ * @test unsupported jsdoc tag
+ * @something this is not supported
+ */
+import okay from 'okay'
