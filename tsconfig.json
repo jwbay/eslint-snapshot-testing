@@ -15,5 +15,5 @@
 		"skipLibCheck": true,
 		"forceConsistentCasingInFileNames": true
 	},
-	"exclude": ["**/*.fixture.ts"]
+	"exclude": ["**/*.fixture.ts", "dist"]
 }

@@ -11,7 +11,7 @@ function nested2() {
 ~~~~~ [1]
 }
 
-[1] class name 'NestedFoo' should not include foo."
+[1] class name 'NestedFoo' should not include 'foo'."
 `;
 
 exports[`should handle indented single line errors 1`] = `
@@ -22,7 +22,7 @@ function nested() {
 }
 
 
-[1] variable name 'somethingFoo' should not include foo."
+[1] variable name 'somethingFoo' should not include 'foo'."
 `;
 
 exports[`should handle multiline errors 1`] = `
@@ -35,7 +35,7 @@ class SomethingFoo {
 ~ [1]
 
 
-[1] class name 'SomethingFoo' should not include foo."
+[1] class name 'SomethingFoo' should not include 'foo'."
 `;
 
 exports[`should handle single line errors 1`] = `
@@ -44,5 +44,5 @@ let somethingFoo
     ~~~~~~~~~~~~ [1]
 
 
-[1] variable name 'somethingFoo' should not include foo."
+[1] variable name 'somethingFoo' should not include 'foo'."
 `;

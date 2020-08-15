@@ -1,7 +1,7 @@
 {
-  "name": "eslint-snapshot-rule-tester",
+  "name": "eslint-rule-snapshot-tester",
   "version": "0.0.0",
-  "description": "Jest snapshot testing for ESLint rules",
+  "description": "Fixture-based Jest snapshot testing for ESLint rules",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -17,7 +17,10 @@
   },
   "keywords": [
     "eslint",
-    "rules"
+    "rules",
+    "snapshot",
+    "test",
+    "fixture"
   ],
   "author": "justin.bay@outlook.com",
   "license": "MIT",

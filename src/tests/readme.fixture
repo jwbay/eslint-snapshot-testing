@@ -1,0 +1,27 @@
+/**
+ * @test fails with foo by default
+ */
+const okay = 'something';
+const foo = 'fails';
+
+/**
+ * @test allows overriding forbidden variable names
+ * @ruleOptions [{ "forbidden": ["bar", "baz"] }]
+ */
+const bar = 'fails';
+const baz = 'also fails';
+const foo = 'this is now okay';
+
+/**
+ * @test allows forbidden variable names in tests
+ * @filename something.spec.js
+ */
+const foo = 'this is now okay';
+
+/**
+ * @test allows overridden variable names in tests
+ * @filename something.spec.js
+ * @ruleOptions [{ "forbidden": ["bar", "baz"] }]
+ */
+const bar = 'okay';
+const baz = 'also okay';

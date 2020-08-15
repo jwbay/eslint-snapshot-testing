@@ -5,13 +5,13 @@ import { serializeLintResult } from './lintResultSerializer'
 import { findFixtureFile } from './fixtureFinder'
 import { parseFixture } from './fixtureParser'
 
-interface RunFixtureOptions {
+interface Options {
 	/**
 	 * The rule object, with 'create' and 'meta' properties.
 	 *
 	 * @example
 	 *
-	 * runFixture({
+	 * runLintFixtureTests({
 	 *   ...
 	 *   rule: require('../rules/my-custom-rule')
 	 * })
@@ -22,7 +22,7 @@ interface RunFixtureOptions {
 	 *
 	 * @example
 	 *
-	 * runFixture({
+	 * runLintFixtureTests({
 	 *   ...
 	 *   rulename: 'my-rule-name'
 	 * })
@@ -34,7 +34,7 @@ interface RunFixtureOptions {
 	 *
 	 * @example
 	 *
-	 * runFixture({
+	 * runLintFixtureTests({
 	 *   ...
 	 *   fixtureDirectory: __dirname
 	 * })
@@ -46,7 +46,7 @@ interface RunFixtureOptions {
 	 *
 	 * @example
 	 *
-	 * runFixture({
+	 * runLintFixtureTests({
 	 *   ...
 	 *   eslintConfig: {
 	 *     parserOptions: {
@@ -57,9 +57,6 @@ interface RunFixtureOptions {
 	 * })
 	 */
 	eslintConfig?: Omit<Linter.Config, 'rules'>
-
-	// TODOS
-	// write a readme
 }
 
 const defaultLintConfig: Linter.Config = {
@@ -96,7 +93,7 @@ export function runLintFixtureTests({
 	ruleName,
 	eslintConfig = defaultLintConfig,
 	fixtureDirectory = getFixtureDirectory(new Error('getFixtureDirectory')),
-}: RunFixtureOptions) {
+}: Options) {
 	const fixturePath = findFixtureFile(ruleName, fixtureDirectory)
 	const fixtureSource = fs.readFileSync(fixturePath, 'utf8').replace(/\r\n/g, '\n')
 	const tests = parseFixture(fixtureSource, fixturePath)

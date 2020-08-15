@@ -1,0 +1,38 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`allows forbidden variable names in tests 1`] = `
+"
+const foo = 'this is now okay';
+
+"
+`;
+
+exports[`allows overridden variable names in tests 1`] = `
+"
+const bar = 'okay';
+const baz = 'also okay';
+"
+`;
+
+exports[`allows overriding forbidden variable names 1`] = `
+"
+const bar = 'fails';
+      ~~~ [1]       
+const baz = 'also fails';
+      ~~~ [2]            
+const foo = 'this is now okay';
+
+
+[1] variable name 'bar' should not include 'bar'.
+[2] variable name 'baz' should not include 'baz'."
+`;
+
+exports[`fails with foo by default 1`] = `
+"
+const okay = 'something';
+const foo = 'fails';
+      ~~~ [1]       
+
+
+[1] variable name 'foo' should not include 'foo'."
+`;

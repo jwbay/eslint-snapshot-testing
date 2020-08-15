@@ -29,8 +29,8 @@ function nested3() {
 ~~~~~ [4]
 }
 
-[1] variable name 'somethingFoo2' should not include foo.
-[2] variable name 'somethingFoo' should not include foo.
-[3] class name 'SomethingFoo2' should not include foo.
-[4] class name 'NestedFoo' should not include foo."
+[1] variable name 'somethingFoo2' should not include 'foo'.
+[2] variable name 'somethingFoo' should not include 'foo'.
+[3] class name 'SomethingFoo2' should not include 'foo'.
+[4] class name 'NestedFoo' should not include 'foo'."
 `;
