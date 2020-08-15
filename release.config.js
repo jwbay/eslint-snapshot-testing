@@ -1,6 +1,5 @@
 /** @type {import('semantic-release').GlobalConfig} */
 module.exports = {
-	dryRun: true,
 	plugins: [
 		[
 			'@semantic-release/commit-analyzer',
