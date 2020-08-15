@@ -36,3 +36,13 @@ const foo = 'fails';
 
 [1] variable name 'foo' should not include 'foo'."
 `;
+
+exports[`should lint correctly 1`] = `
+"const okay = 'this will be okay';
+const foo = 'this is invalid';
+      ~~~ [1]                 
+const okayToo = 'this will also be okay';
+
+
+[1] variable name 'foo' should not include 'foo'."
+`;

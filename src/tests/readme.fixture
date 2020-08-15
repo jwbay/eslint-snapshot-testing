@@ -1,3 +1,7 @@
+const okay = 'this will be okay';
+const foo = 'this is invalid';
+const okayToo = 'this will also be okay';
+
 /**
  * @test fails with foo by default
  */

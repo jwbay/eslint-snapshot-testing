@@ -38,10 +38,10 @@ tests, avoiding indendentation and escaping issues.
     // Jest Snapshot v1, https://goo.gl/fbAQLP
 
     exports[`should lint correctly 1`] = `
-    "const okay = 'something';
+    "const okay = 'this will be okay';
     const foo = 'this is invalid';
           ~~~ [1]
-    const okayToo = 'foo';
+    const okayToo = 'this will also be okay';
 
     [1] Variable name should not be 'foo'. Pick something else."
     `;
