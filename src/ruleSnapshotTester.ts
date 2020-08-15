@@ -81,7 +81,7 @@ const defaultLintConfig: Linter.Config = {
  *
  * @example
  * import myCustomRule from '../my-custom-eslint-rule';
- * import { runLintFixtureTests } from 'eslint-snapshot-rule-tester';
+ * import { runLintFixtureTests } from 'eslint-rule-snapshot-testing';
  *
  * runLintFixtureTests({
  *   rule: myCustomRule,

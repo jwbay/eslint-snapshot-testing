@@ -1,18 +1,18 @@
 ![CI](https://github.com/jwbay/eslint-snapshot-testing/workflows/CI/badge.svg)
 
-# ESLint Rule Snapshot Tester
+# ESLint Rule Snapshot Testing
 
-The convenience of Jest snapshot testing brought to ESLint rules. First-class fixture support allows
-you to write input source code in its own file instead of embedded in a string in tests, avoiding
-indendentation and escaping issues.
+✨ The convenience of Jest snapshot testing brought to ESLint rule authoring. First-class fixture
+support allows you to write input source code in its own file instead of embedded in a string in
+tests, avoiding indendentation and escaping issues.
 
 ## Usage
 
 1. Create a test file for your rule to be run by Jest, e.g. `my-rule-name.test.js`:
 
     ```js
-    import { runLintFixtureTests } from 'eslint-rule-snapshot-tester'
-    import { noFooAllowed } from '../rules/no-foo-allowed'
+    import { runLintFixtureTests } from 'eslint-rule-snapshot-testing'
+    import noFooAllowed from '../rules/no-foo-allowed'
 
     // will generate and run tests for you
     runLintFixtureTests({
@@ -21,13 +21,13 @@ indendentation and escaping issues.
     })
     ```
 
-1. Create a fixture file for your rule tests. Name it `my-rule-name.fixture` and put it next to your
-   test.
+1. Create a fixture file for your rule tests. Name it `my-rule-name.fixture`, matching the
+   `ruleName` passed above, and put it next to your test.
 1. Write some code in the fixture file. Put a mix of valid and invalid code in it:
     ```
-    const okay = 'something';
+    const okay = 'this will be okay';
     const foo = 'this is invalid';
-    const okayToo = 'foo';
+    const okayToo = 'this will also be okay';
     ```
 1. Run your tests with Jest. The fixture will be parsed and linted, and the results placed in a
    snapshot file for you with error locations visually marked in the input source. The squiggles in
@@ -203,7 +203,7 @@ to determine whether something is a lint error or not:
 
 ```js
 import { Linter } from 'eslint'
-import { serializeLintResult } from 'eslint-rule-snapshot-tester'
+import { serializeLintResult } from 'eslint-rule-snapshot-testing'
 import { myRule } from '../rules/my-rule'
 
 const processCwd = jest.spyOn(process, 'cwd')

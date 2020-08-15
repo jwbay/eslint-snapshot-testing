@@ -1,5 +1,5 @@
 {
-  "name": "eslint-rule-snapshot-tester",
+  "name": "eslint-rule-snapshot-testing",
   "version": "0.0.0",
   "description": "Fixture-based Jest snapshot testing for ESLint rules",
   "main": "dist/index.js",

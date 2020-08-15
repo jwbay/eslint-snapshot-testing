@@ -13,7 +13,7 @@ interface SerializeOptions {
  * @example
  * import myCustomRule from '../my-custom-eslint-rule';
  * import someFunction from '../helpers/someFunction';
- * import { serializeLintResult } from 'eslint-snapshot-rule-tester';
+ * import { serializeLintResult } from 'eslint-rule-snapshot-testing';
  * import { Linter } from 'eslint';
  *
  * test('when someFunction is false', () => {
