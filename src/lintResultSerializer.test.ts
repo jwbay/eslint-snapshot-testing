@@ -48,7 +48,7 @@ const testRule: Rule.RuleModule = {
 					process.cwd().startsWith('/bar')
 				) {
 					context.report({
-						loc: variableDeclarator.loc!,
+						loc: variableDeclarator.id.loc!,
 						message:
 							'variables named foo are not allowed when working directory is /bar',
 					})

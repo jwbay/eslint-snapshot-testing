@@ -73,7 +73,10 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 				currentColumn++
 			} while (currentColumn < endColumnForThisLine)
 
-			errorMatrix[currentLine].push(' ', '[', messageId.toString(), ']')
+			errorMatrix[currentLine][currentColumn++] = ' '
+			errorMatrix[currentLine][currentColumn++] = '['
+			errorMatrix[currentLine][currentColumn++] = messageId.toString()
+			errorMatrix[currentLine][currentColumn++] = ']'
 			currentLine++
 			currentColumn = 0
 		} while (currentLine < endLine + 1)

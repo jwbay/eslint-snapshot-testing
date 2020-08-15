@@ -3,7 +3,7 @@
 exports[`serializeLintResult supports per-test setup and mocking for lint rules should have errors 1`] = `
 "
 const foo = 'something';
-      ~~~~~~~~~~~~~~~~~  [1]
+      ~~~ [1]           
 [1] variables named foo are not allowed when working directory is /bar"
 `;
 

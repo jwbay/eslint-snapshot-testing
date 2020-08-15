@@ -62,7 +62,7 @@ import fails from 'cluster'
 exports[`object options across lines 1`] = `
 "
 import DisallowedObject from 'foo';
-       ~~~~~~~~~~~~~~~~             [1]
+       ~~~~~~~~~~~~~~~~ [1]        
 
 [1] 'default' import from 'foo' is restricted. Please use the default import from '/bar/baz/' instead."
 `;
