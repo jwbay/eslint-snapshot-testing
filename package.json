@@ -1,7 +1,7 @@
 {
   "name": "eslint-rule-snapshot-testing",
   "version": "0.0.0",
-  "description": "Fixture-based Jest snapshot testing for ESLint rules",
+  "description": "Jest snapshot testing for ESLint rules with fixture support",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "scripts": {
@@ -9,13 +9,16 @@
     "watch": "tsc --watch --preserveWatchOutput",
     "lint": "prettier . --check",
     "format": "prettier . --write",
-    "test": "jest"
+    "test": "jest",
+    "switch:6": "yarn remove eslint && yarn add eslint@^6.0.0 -D",
+    "switch:7": "yarn remove eslint && yarn add eslint@^7.0.0 -D"
   },
   "repository": {
     "type": "git",
     "url": "git@github.com:jwbay/eslint-snapshot-testing.git"
   },
   "keywords": [
+    "jest",
     "eslint",
     "rules",
     "snapshot",
@@ -25,7 +28,8 @@
   "author": "justin.bay@outlook.com",
   "license": "MIT",
   "peerDependencies": {
-    "eslint": "^7.0.0"
+    "eslint": "^6.0.0 || ^7.0.0",
+    "jest": "*"
   },
   "devDependencies": {
     "@babel/core": "^7.11.0",

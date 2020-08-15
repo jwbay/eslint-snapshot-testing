@@ -22,8 +22,10 @@ jobs:
               run: yarn build
             - name: Lint
               run: yarn lint
-            - name: Test
-              run: yarn test
+            - name: Test ESLint@6
+              run: yarn switch:6 && yarn test
+            - name: Test ESLint@7
+              run: yarn switch:7 && yarn test
 
     release:
         name: Release
