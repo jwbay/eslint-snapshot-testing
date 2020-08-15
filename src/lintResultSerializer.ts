@@ -36,7 +36,7 @@ interface SerializeOptions {
  * }
  */
 export function serializeLintResult({ lintedSource, lintMessages }: SerializeOptions) {
-	const sourceLines = lintedSource.split('\n')
+	const sourceLines = lintedSource.split(/\r?\n/)
 	const errorMatrix: string[][] = []
 	const uniqueMessages: string[] = []
 
