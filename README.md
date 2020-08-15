@@ -11,14 +11,14 @@ tests, avoiding indendentation and escaping issues.
 1. Create a test file for your rule to be run by Jest, e.g. `my-rule-name.test.js`:
 
     ```js
-    import { runLintFixtureTests } from 'eslint-rule-snapshot-testing'
-    import noFooAllowed from '../rules/no-foo-allowed'
+    import { runLintFixtureTests } from 'eslint-rule-snapshot-testing';
+    import noFooAllowed from '../rules/no-foo-allowed';
 
     // will generate and run tests for you
     runLintFixtureTests({
-    	rule: noFooAllowed,
-    	ruleName: 'no-foo-allowed',
-    })
+        rule: noFooAllowed,
+        ruleName: 'no-foo-allowed',
+    });
     ```
 
 1. Create a fixture file for your rule tests. Name it `my-rule-name.fixture`, matching the
@@ -168,10 +168,10 @@ path.
 
 ```js
 runLintFixtureTests({
-	rule: myRule,
-	ruleName: 'my-rule-name',
-	fixtureDirectory: path.join(__dirname, 'custom-fixture-directory'),
-})
+    rule: myRule,
+    ruleName: 'my-rule-name',
+    fixtureDirectory: path.join(__dirname, 'custom-fixture-directory'),
+});
 ```
 
 ### ESLint options
@@ -181,15 +181,15 @@ options for your rule, for example.
 
 ```js
 runLintFixtureTests({
-	rule: myRule,
-	ruleName: 'my-rule-name',
-	eslintConfig: {
-		parserOptions: {
-			ecmaVersion: 2020,
-			sourceType: 'module',
-		},
-	},
-})
+    rule: myRule,
+    ruleName: 'my-rule-name',
+    eslintConfig: {
+        parserOptions: {
+            ecmaVersion: 2020,
+            sourceType: 'module',
+        },
+    },
+});
 ```
 
 ### Full control over tests with the raw serializer
@@ -202,33 +202,33 @@ per-test mocking or other setup. As an example, we can imagine a rule which cons
 to determine whether something is a lint error or not:
 
 ```js
-import { Linter } from 'eslint'
-import { serializeLintResult } from 'eslint-rule-snapshot-testing'
-import { myRule } from '../rules/my-rule'
+import { Linter } from 'eslint';
+import { serializeLintResult } from 'eslint-rule-snapshot-testing';
+import { myRule } from '../rules/my-rule';
 
-const processCwd = jest.spyOn(process, 'cwd')
-const sourceCode = `\nconst foo = 'something';`
+const processCwd = jest.spyOn(process, 'cwd');
+const sourceCode = `\nconst foo = 'something';`;
 
 describe('serializeLintResult supports per-test setup and mocking for lint rules', () => {
-	test('should not have errors', () => {
-		processCwd.mockReturnValue('/foo')
-		expect(lint(sourceCode)).toMatchSnapshot()
-	})
+    test('should not have errors', () => {
+        processCwd.mockReturnValue('/foo');
+        expect(lint(sourceCode)).toMatchSnapshot();
+    });
 
-	test('should have errors', () => {
-		processCwd.mockReturnValue('/bar')
-		expect(lint(sourceCode)).toMatchSnapshot()
-	})
-})
+    test('should have errors', () => {
+        processCwd.mockReturnValue('/bar');
+        expect(lint(sourceCode)).toMatchSnapshot();
+    });
+});
 
 function lint(source) {
-	const linter = new Linter({})
-	linter.defineRule('my-rule-name', testRule)
-	const lintMessages = linter.verify(source, { rules: { ['my-rule-name']: 'error' } })
-	return serializeLintResult({
-		lintedSource: source,
-		lintMessages,
-	})
+    const linter = new Linter({});
+    linter.defineRule('my-rule-name', testRule);
+    const lintMessages = linter.verify(source, { rules: { ['my-rule-name']: 'error' } });
+    return serializeLintResult({
+        lintedSource: source,
+        lintMessages,
+    });
 }
 ```
 

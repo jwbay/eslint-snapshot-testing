@@ -6,4 +6,13 @@ module.exports = {
 	singleQuote: true,
 	printWidth: 100,
 	proseWrap: 'always',
+	overrides: [
+		{
+			files: ['*.md'],
+			options: {
+				useTabs: false,
+				semi: true,
+			},
+		},
+	],
 }
