@@ -1,5 +1,44 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`should collapse adjacent errors correctly 1`] = `
+"
+function collapsesAdjacentErrors() {
+    let foo, thisIsFine, foo2, thisIsAlsoFine, foo3;
+        ~~~ [1]                                     
+                         ~~~~ [2]                   
+                                               ~~~~ [3]
+}
+
+[1] variable name 'foo' should not include 'foo'.
+[2] variable name 'foo2' should not include 'foo'.
+[3] variable name 'foo3' should not include 'foo'."
+`;
+
+exports[`should format adjacent errors correctly 1`] = `
+"
+function adjacentErrors() {
+    let foo, foo2, foo3;
+        ~~~ [1]         
+             ~~~~ [2]   
+                   ~~~~ [3]
+    let foo4, foo5;
+        ~~~~ [4]   
+              ~~~~ [5]
+
+    let foo6;
+        ~~~~ [6]
+    let thisIsFine;
+}
+
+
+[1] variable name 'foo' should not include 'foo'.
+[2] variable name 'foo2' should not include 'foo'.
+[3] variable name 'foo3' should not include 'foo'.
+[4] variable name 'foo4' should not include 'foo'.
+[5] variable name 'foo5' should not include 'foo'.
+[6] variable name 'foo6' should not include 'foo'."
+`;
+
 exports[`should handle indented multiline errors 1`] = `
 "
 function nested2() {
@@ -10,6 +49,7 @@ function nested2() {
     }
 ~~~~~ [1]
 }
+
 
 [1] class name 'NestedFoo' should not include 'foo'."
 `;

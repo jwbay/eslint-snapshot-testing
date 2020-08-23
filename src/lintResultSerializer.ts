@@ -37,7 +37,7 @@ interface SerializeOptions {
  */
 export function serializeLintResult({ lintedSource, lintMessages }: SerializeOptions) {
 	const sourceLines = lintedSource.split(/\r?\n/)
-	const errorMatrix: string[][] = []
+	const errorLines = new Map<number, string[][]>()
 	const uniqueMessages: string[] = []
 
 	lintMessages.forEach((lintMessage) => {
@@ -56,36 +56,39 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 		let currentLine = startLine
 		let currentColumn = startColumn
 		do {
-			if (!errorMatrix[currentLine]) {
-				errorMatrix[currentLine] = sourceLines[currentLine].split('').map((char) => {
-					// need to preserve existing whitespace (tab characters) when allocating a new error line
-					// to avoid indentation issues
-					const isWhitespace = !char.trim()
-					return isWhitespace ? char : ' '
-				})
-			}
+			const currentErrorLine = Array.from(sourceLines[currentLine]).map((char) => {
+				// need to preserve existing whitespace (tab characters) when allocating a new error line
+				// to avoid indentation issues
+				const isWhitespace = !char.trim()
+				return isWhitespace ? char : ' '
+			})
 
 			const endColumnForThisLine =
 				currentLine === endLine ? endColumn : sourceLines[currentLine].length
 
 			do {
-				errorMatrix[currentLine][currentColumn] = '~'
+				currentErrorLine[currentColumn] = '~'
 				currentColumn++
 			} while (currentColumn < endColumnForThisLine)
 
-			errorMatrix[currentLine][currentColumn++] = ' '
-			errorMatrix[currentLine][currentColumn++] = '['
-			errorMatrix[currentLine][currentColumn++] = messageId.toString()
-			errorMatrix[currentLine][currentColumn++] = ']'
+			currentErrorLine[currentColumn++] = ' '
+			currentErrorLine[currentColumn++] = '['
+			currentErrorLine[currentColumn++] = messageId.toString()
+			currentErrorLine[currentColumn++] = ']'
+
+			const allErrorsOnThisLine = errorLines.get(currentLine) ?? []
+			allErrorsOnThisLine.push(currentErrorLine)
+			errorLines.set(currentLine, allErrorsOnThisLine)
+
 			currentLine++
 			currentColumn = 0
 		} while (currentLine < endLine + 1)
 	})
 
 	const interleaved = sourceLines.reduce<string[]>((result, nextLine, index) => {
-		const errorLine = errorMatrix[index]
-		if (errorLine) {
-			result.push(nextLine, errorLine.join(''))
+		const errorLineSet = errorLines.get(index)
+		if (errorLineSet) {
+			result.push(nextLine, ...errorLineSet.map((line) => line.join('')))
 		} else {
 			result.push(nextLine)
 		}
