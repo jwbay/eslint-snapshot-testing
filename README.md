@@ -1,4 +1,8 @@
 ![CI](https://github.com/jwbay/eslint-snapshot-testing/workflows/CI/badge.svg)
+[![npm](https://img.shields.io/npm/v/eslint-rule-snapshot-testing?label=eslint-rule-snapshot-testing)](https://www.npmjs.com/package/eslint-rule-snapshot-testing)
+![license](https://img.shields.io/npm/l/eslint-rule-snapshot-testing)
+![TS](https://img.shields.io/badge/TypeScript-strict%20%F0%9F%92%AA-blue)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg)](https://github.com/prettier/prettier)
 
 # ESLint Rule Snapshot Testing
 
