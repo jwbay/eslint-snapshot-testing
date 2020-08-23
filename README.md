@@ -236,4 +236,3 @@ function lint(source) {
 
 -   Double quotes in source code are subject to noise in snapshots due to escaping
 -   Testing lint rule auto-fixes and suggestions is not yet supported
--   Overlapping error spans is not yet supported

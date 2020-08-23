@@ -31,3 +31,12 @@ function adjacentErrors() {
 function collapsesAdjacentErrors() {
     let foo, thisIsFine, foo2, thisIsAlsoFine, foo3;
 }
+
+/** @test should support nested error spans */
+function nestedErrorSpans() {
+    class SomethingFoo {
+        bar() {
+            let foo;
+        }
+    }
+}

@@ -4,10 +4,9 @@ exports[`should collapse adjacent errors correctly 1`] = `
 "
 function collapsesAdjacentErrors() {
     let foo, thisIsFine, foo2, thisIsAlsoFine, foo3;
-        ~~~ [1]                                     
-                         ~~~~ [2]                   
-                                               ~~~~ [3]
+        ~~~ [1]          ~~~~ [2]              ~~~~ [3]
 }
+
 
 [1] variable name 'foo' should not include 'foo'.
 [2] variable name 'foo2' should not include 'foo'.
@@ -18,9 +17,8 @@ exports[`should format adjacent errors correctly 1`] = `
 "
 function adjacentErrors() {
     let foo, foo2, foo3;
-        ~~~ [1]         
+        ~~~ [1]    ~~~~ [3]
              ~~~~ [2]   
-                   ~~~~ [3]
     let foo4, foo5;
         ~~~~ [4]   
               ~~~~ [5]
@@ -85,4 +83,24 @@ let somethingFoo
 
 
 [1] variable name 'somethingFoo' should not include 'foo'."
+`;
+
+exports[`should support nested error spans 1`] = `
+"
+function nestedErrorSpans() {
+    class SomethingFoo {
+    ~~~~~~~~~~~~~~~~~~~~ [1]
+        bar() {
+~~~~~~~~~~~~~~~ [1]
+            let foo;
+~~~~~~~~~~~~~~~~~~~~ [1]
+                ~~~ [2]
+        }
+~~~~~~~~~ [1]
+    }
+~~~~~ [1]
+}
+
+[1] class name 'SomethingFoo' should not include 'foo'.
+[2] variable name 'foo' should not include 'foo'."
 `;

@@ -59,8 +59,7 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 			const currentErrorLine = Array.from(sourceLines[currentLine]).map((char) => {
 				// need to preserve existing whitespace (tab characters) when allocating a new error line
 				// to avoid indentation issues
-				const isWhitespace = !char.trim()
-				return isWhitespace ? char : ' '
+				return isWhitespace(char) ? char : ' '
 			})
 
 			const endColumnForThisLine =
@@ -88,7 +87,8 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 	const interleaved = sourceLines.reduce<string[]>((result, nextLine, index) => {
 		const errorLineSet = errorLines.get(index)
 		if (errorLineSet) {
-			result.push(nextLine, ...errorLineSet.map((line) => line.join('')))
+			const collapsed = collapseErrorLines(errorLineSet)
+			result.push(nextLine, ...collapsed.map((line) => line.join('')))
 		} else {
 			result.push(nextLine)
 		}
@@ -101,4 +101,33 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 	)
 
 	return interleaved.join('\n')
+}
+
+function collapseErrorLines(allErrorLines: string[][]) {
+	let [mainLine, ...rest] = allErrorLines
+	const collidedErrorLines: string[][] = []
+
+	nextLine: for (const errorLine of rest) {
+		const mergedLine = [...mainLine]
+		for (let column = 0; column < errorLine.length; column++) {
+			const currentCharacter = errorLine[column]
+			const collision = !isWhitespace(mainLine[column]) && !isWhitespace(currentCharacter)
+			if (collision) {
+				collidedErrorLines.push(errorLine)
+				continue nextLine
+			}
+
+			mergedLine[column] = isWhitespace(currentCharacter)
+				? mergedLine[column]
+				: currentCharacter
+		}
+
+		mainLine = mergedLine
+	}
+
+	return [mainLine, ...collidedErrorLines]
+}
+
+function isWhitespace(char: string) {
+	return !char || !char.trim()
 }
