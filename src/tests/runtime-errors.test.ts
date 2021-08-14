@@ -90,21 +90,3 @@ it('should give a helpful error when rule options are not an array', () => {
 		    /** @ruleoptions [[\\"first\\", \\"second\\"]]"
 	`)
 })
-
-it('should give a helpful warning when encountering an unsupported jsdoc tag in a fixture', () => {
-	consoleWarn.mockImplementation(() => {})
-	try {
-		runLintFixtureTests({
-			rule,
-			ruleName: 'unsupported-jsdoc',
-		})
-	} catch {
-		// the actual generated test will fail to run because it's nested in this one,
-		// but we will have already printed the warning from parsing the fixture
-	}
-
-	const warning = consoleWarn.mock.calls[0][0].trim()
-	expect(warning).toMatchInlineSnapshot(
-		`"Unrecognized tag '@something' in fixture JSDoc. Supported tags: test, filename, ruleOptions"`
-	)
-})
