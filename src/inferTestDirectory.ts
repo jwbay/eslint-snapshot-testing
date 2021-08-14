@@ -28,7 +28,8 @@ function parseNodeStacktrace(stackString: string) {
 		methodName: string
 	}
 
-	const nodeRe = /^\s*at (?:((?:\[object object\])?[^\\/]+(?: \[as \S+\])?) )?\(?(.*?):(\d+)(?::(\d+))?\)?\s*$/i
+	const nodeRe =
+		/^\s*at (?:((?:\[object object\])?[^\\/]+(?: \[as \S+\])?) )?\(?(.*?):(\d+)(?::(\d+))?\)?\s*$/i
 	const lines = stackString.split('\n')
 	return lines.reduce<ParsedLine[]>((stack, line) => {
 		const parseResult = parse(line)

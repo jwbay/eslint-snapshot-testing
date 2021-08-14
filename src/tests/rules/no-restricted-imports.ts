@@ -7,7 +7,6 @@ import type { Rule } from 'eslint'
  * @fileoverview Restrict usage of specified node imports.
  * @author Guy Ellis
  */
-'use strict'
 
 //------------------------------------------------------------------------------
 // Rule Definition
