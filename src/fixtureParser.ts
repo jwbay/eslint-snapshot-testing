@@ -1,7 +1,5 @@
 import * as path from 'path'
-import type { Tag } from 'comment-parser'
-
-const commentParser: typeof import('comment-parser') = require('comment-parser')
+import { parse, Spec } from 'comment-parser'
 
 interface FixtureEntry {
 	testName: string
@@ -33,7 +31,7 @@ export function parseFixture(fixtureContent: string, fixturePath: string) {
 
 	const result = splitContent.map<FixtureEntry>((testSourceCode, index) => {
 		const jsdoc = jsDocs[index]
-		const parsedBlock = commentParser(jsdoc)[0]
+		const parsedBlock = parse(jsdoc)[0]
 		const entry: FixtureEntry = {
 			testSource: testSourceCode,
 			testName: 'should lint correctly',
@@ -67,13 +65,27 @@ export function parseFixture(fixtureContent: string, fixturePath: string) {
 	return result
 }
 
-function parseRuleOptionsFromJSDoc(instruction: Tag) {
+function parseRuleOptionsFromJSDoc(instruction: Spec) {
 	// comment-parser strips wrapping array brackets, but we need them preserved (and required)
 	// to avoid ambiguity. ESLint config allows 'spread' options for rules, e.g.:
 	// 	my-rule: ['error', 'something', 'something else']
 	// but it also supports arrays as a single option, e.g.:
 	// 	my-rule: ['error', ['something', 'something else']]
-	const ruleOptionSource = instruction.source.replace('@' + instruction.tag, '').trim()
+	const ruleOptionSource = instruction.source
+		.map((line) => {
+			const { name, description } = line.tokens
+			if (name && !description) {
+				return name
+			}
+
+			if (description && !name) {
+				return description
+			}
+
+			return `${name} ${description}`
+		})
+		.join('')
+
 	let parsedOptions: any[]
 	try {
 		parsedOptions = JSON.parse(ruleOptionSource)
