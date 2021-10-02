@@ -19,7 +19,7 @@ it('should give a helpful error when unable to locate a fixture', () => {
 			ruleName: 'my-rule-with-missing-fixture',
 		})
 	} catch (e) {
-		error = e
+		error = e as Error
 	}
 
 	const cwd = process.cwd().toLowerCase()
@@ -50,7 +50,7 @@ it('should give a helpful error when unable to parse rule options in a fixture',
 			ruleName: 'rule-options-jsdoc-parse-error',
 		})
 	} catch (e) {
-		error = e
+		error = e as Error
 	}
 
 	const warning = consoleWarn.mock.calls[0][0].toLowerCase().trim()
@@ -71,7 +71,7 @@ it('should give a helpful error when rule options are not an array', () => {
 			ruleName: 'rule-options-jsdoc-not-array-value',
 		})
 	} catch (e) {
-		error = e
+		error = e as Error
 	}
 
 	const message = error.message.toLowerCase().trim()
