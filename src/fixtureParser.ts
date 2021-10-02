@@ -5,10 +5,11 @@ interface FixtureEntry {
 	testName: string
 	fileName: string
 	testSource: string
+	acceptFix?: boolean
 	ruleOptions?: any[]
 }
 
-const knownTags = ['test', 'filename', 'ruleOptions'] as const
+const knownTags = ['test', 'filename', 'ruleOptions', 'acceptFix'] as const
 type KnownTags = typeof knownTags[number]
 
 export function parseFixture(fixtureContent: string, fixturePath: string) {
@@ -51,6 +52,9 @@ export function parseFixture(fixtureContent: string, fixturePath: string) {
 				case 'ruleoptions' as string:
 					entry.ruleOptions = parseRuleOptionsFromJSDoc(instruction)
 					continue
+				case 'acceptfix' as string:
+					entry.acceptFix = true
+					break
 				default:
 					const supported = knownTags.join(', ')
 					console.warn(

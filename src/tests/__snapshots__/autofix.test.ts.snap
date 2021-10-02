@@ -1,0 +1,117 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule with accepted autofix should display errors before and code after fix 1`] = `
+"Original code:
+========================
+
+const namedFooSecond = 'fixed'
+      ~~~~~~~~~~~~~~ [1]      
+
+
+[1] variable name 'namedFooSecond' should not include 'foo'.
+
+Code after applying fixes:
+==========================
+
+const namedBarSecond = 'fixed'
+
+"
+`;
+
+exports[`rule with nested reports and accepted autofix should display errors before and code after fix 1`] = `
+"Original code:
+========================
+
+class SomethingFooSecond {
+~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+    multiline() {
+~~~~~~~~~~~~~~~~~ [1]
+        const foo = 42;
+~~~~~~~~~~~~~~~~~~~~~~~ [1]
+              ~~~ [2]  
+    }
+~~~~~ [1]
+}
+~ [1]
+
+
+[1] class name 'SomethingFooSecond' should not include 'foo'.
+[2] variable name 'foo' should not include 'foo'.
+
+Code after applying fixes:
+==========================
+
+class SomethingBarSecond {
+    multiline() {
+        const bar = 42;
+    }
+}
+
+"
+`;
+
+exports[`rule with nested reports and unaccepted autofix should display errors normally 1`] = `
+"
+class SomethingFooFirst {
+~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+    multiline() {
+~~~~~~~~~~~~~~~~~ [1]
+        const foo = 42;
+~~~~~~~~~~~~~~~~~~~~~~~ [1]
+              ~~~ [2]  
+    }
+~~~~~ [1]
+}
+~ [1]
+ 
+
+[1] class name 'SomethingFooFirst' should not include 'foo'.
+[2] variable name 'foo' should not include 'foo'."
+`;
+
+exports[`rule with unaccepted autofix should display errors normally 1`] = `
+"
+const namedFooFirst = 'not fixed'
+      ~~~~~~~~~~~~~ [1]          
+ 
+
+[1] variable name 'namedFooFirst' should not include 'foo'."
+`;
+
+exports[`rule with unstable fix should show remaining errors after applying fix 1`] = `
+"Original code:
+========================
+
+class SomethingFooThird {
+~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+    multiline() {
+~~~~~~~~~~~~~~~~~ [1]
+        const foo = 42;
+~~~~~~~~~~~~~~~~~~~~~~~ [1]
+              ~~~ [2]  
+    }
+~~~~~ [1]
+}
+~ [1]
+
+[1] class name 'SomethingFooThird' should not include 'foo'.
+[2] variable name 'foo' should not include 'foo'.
+
+Code after applying fixes:
+==========================
+
+class SomethingFooBarBarBarBarBarBarBarBarBarBarThird {
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+    multiline() {
+~~~~~~~~~~~~~~~~~ [1]
+        const foobarbarbarbarbarbarbarbarbarbar = 42;
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
+              ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~ [2]  
+    }
+~~~~~ [1]
+}
+~ [1]
+
+[1] class name 'SomethingFooBarBarBarBarBarBarBarBarBarBarThird' should not include 'foo'.
+[2] variable name 'foobarbarbarbarbarbarbarbarbarbar' should not include 'foo'."
+`;

@@ -147,6 +147,54 @@ const foo = 'fails';
 
 ```
 
+### Testing fixes
+
+Use the `acceptFix` JSDoc tag for a test to run your rule's fixer against the source code. The
+snapshot will contain both the before and after code.
+
+Example: `my-autofix-rule.fixture`
+
+```
+/**
+ * @test replaces foo with bar
+ * @acceptFix
+ */
+const somethingFoo = 'something';
+
+```
+
+If your rule replaces text "foo" with "bar" in variables (note: renaming variables is generally
+unsafe for a linter and should not be done in a real rule), the following snapshot will be
+generated:
+
+```
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`replaces foo with bar`] = `
+"Original code:
+========================
+
+const somethingFoo = 'something';
+      ~~~~~~~~~~~~ [1]
+
+
+[1] variable name 'somethingFoo' should not include 'foo'.
+
+Code after applying fixes:
+==========================
+
+const somethingBar = 'something'
+
+"
+`;
+```
+
+If the rule still reports errors after your fixer runs, those errors are serialized just like the
+initial errors.
+
+> Note: at time of writing, ESLint runs fixes in a finite loop to allow fixes across rules to
+> stabilize. An unstable or incomplete rule fixer may still report errors.
+
 ### Syntax highlighting in fixtures
 
 Fixture names ending in any extension are supported. Examples of valid fixture names:
@@ -239,4 +287,4 @@ function lint(source) {
 ## Limitations and tradeoffs
 
 -   Double quotes in source code are subject to noise in snapshots due to escaping
--   Testing lint rule auto-fixes and suggestions is not yet supported
+-   Testing lint rule suggestions is not yet supported

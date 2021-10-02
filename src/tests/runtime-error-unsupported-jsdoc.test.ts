@@ -11,6 +11,6 @@ runLintFixtureTests({
 it('should give a helpful warning when encountering an unsupported jsdoc tag in a fixture', () => {
 	const warning = consoleWarn.mock.calls[0][0].trim()
 	expect(warning).toMatchInlineSnapshot(
-		`"Unrecognized tag '@something' in fixture JSDoc. Supported tags: test, filename, ruleOptions"`
+		`"Unrecognized tag '@something' in fixture JSDoc. Supported tags: test, filename, ruleOptions, acceptFix"`
 	)
 })

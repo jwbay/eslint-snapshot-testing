@@ -101,21 +101,44 @@ export function runLintFixtureTests({
 		test(entry.testName, () => {
 			const linter = new Linter({})
 			linter.defineRule(ruleName, rule)
-			const result = linter.verify(
-				entry.testSource,
-				{
-					...eslintConfig,
-					rules: {
-						[ruleName]: entry.ruleOptions ? ['error', ...entry.ruleOptions] : 'error',
-					},
+			const lintConfig: Linter.Config = {
+				...eslintConfig,
+				rules: {
+					[ruleName]: entry.ruleOptions ? ['error', ...entry.ruleOptions] : 'error',
 				},
-				entry.fileName
-			)
-			const serialized = serializeLintResult({
-				lintMessages: result,
+			}
+
+			const errorsResult = linter.verify(entry.testSource, lintConfig, entry.fileName)
+			const serializedErrors = serializeLintResult({
+				lintMessages: errorsResult,
 				lintedSource: entry.testSource,
 			})
-			expect(serialized).toMatchSnapshot()
+
+			if (!entry.acceptFix) {
+				expect(serializedErrors).toMatchSnapshot()
+				return
+			}
+
+			const fixed = linter.verifyAndFix(entry.testSource, lintConfig, entry.fileName)
+			const errorsAfterFixing = linter.verify(fixed.output, lintConfig, entry.fileName)
+			let postFixCode = fixed.output
+			if (errorsAfterFixing.length > 0) {
+				postFixCode = serializeLintResult({
+					lintedSource: fixed.output,
+					lintMessages: errorsAfterFixing,
+				})
+			}
+
+			const result = [
+				'Original code:',
+				'========================',
+				serializedErrors,
+				'',
+				'Code after applying fixes:',
+				'==========================',
+				postFixCode,
+			].join('\n')
+			expect(result).toMatchSnapshot()
 		})
 	})
 }
