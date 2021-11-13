@@ -2,7 +2,7 @@
 
 exports[`rule with accepted autofix should display errors before and code after fix 1`] = `
 "Original code:
-========================
+==========================
 
 const namedFooSecond = 'fixed'
       ~~~~~~~~~~~~~~ [1]      
@@ -20,7 +20,7 @@ const namedBarSecond = 'fixed'
 
 exports[`rule with nested reports and accepted autofix should display errors before and code after fix 1`] = `
 "Original code:
-========================
+==========================
 
 class SomethingFooSecond {
 ~~~~~~~~~~~~~~~~~~~~~~~~~~ [1]
@@ -80,7 +80,7 @@ const namedFooFirst = 'not fixed'
 
 exports[`rule with unstable fix should show remaining errors after applying fix 1`] = `
 "Original code:
-========================
+==========================
 
 class SomethingFooThird {
 ~~~~~~~~~~~~~~~~~~~~~~~~~ [1]

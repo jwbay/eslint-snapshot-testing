@@ -131,7 +131,7 @@ export function runLintFixtureTests({
 
 			const result = [
 				'Original code:',
-				'========================',
+				'==========================',
 				serializedErrors,
 				'',
 				'Code after applying fixes:',
