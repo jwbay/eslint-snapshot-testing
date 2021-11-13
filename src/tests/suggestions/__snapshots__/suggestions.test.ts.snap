@@ -1,0 +1,46 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`rule with unaccepted suggestion should display errors normally 1`] = `
+"
+ export const namedFooFirst = 'not fixed'
+              ~~~~~~~~~~~~~ [1]          
+ 
+ 
+[1] Variable names should not contain 'foo'"
+`;
+
+exports[`should accept a suggestion by order 1`] = `
+"Original code:
+==========================
+
+const namedFooSecond = 'should be bar'
+      ~~~~~~~~~~~~~~ [1]              
+ 
+ 
+[1] Variable names should not contain 'foo'
+
+Code after applying suggestion:
+Replace 'foo' with 'bar' in 'namedFooSecond'
+==========================
+
+const namedBarSecond = 'should be bar'
+ 
+ "
+`;
+
+exports[`should accept a suggestion by order 2`] = `
+"Original code:
+==========================
+
+const namedFooThird = 'should be baz'
+      ~~~~~~~~~~~~~ [1]              
+
+[1] Variable names should not contain 'foo'
+
+Code after applying suggestion:
+Replace 'foo' with 'baz' in 'namedFooThird'
+==========================
+
+const namedBazThird = 'should be baz'
+"
+`;

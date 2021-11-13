@@ -124,31 +124,65 @@ export function runLintFixtureTests({
 				lintedSource: entry.testSource,
 			})
 
-			if (!entry.acceptFix) {
+			if (entry.acceptFix) {
+				const fixed = linter.verifyAndFix(entry.testSource, lintConfig, entry.fileName)
+				const errorsAfterFixing = linter.verify(fixed.output, lintConfig, entry.fileName)
+				let postFixCode = fixed.output
+				if (errorsAfterFixing.length > 0) {
+					postFixCode = serializeLintResult({
+						lintedSource: fixed.output,
+						lintMessages: errorsAfterFixing,
+					})
+				}
+
+				const result = [
+					'Original code:',
+					'==========================',
+					serializedErrors,
+					'',
+					'Code after applying fixes:',
+					'==========================',
+					postFixCode,
+				].join('\n')
+				expect(result).toMatchSnapshot()
+			} else if (entry.acceptSuggestion != null) {
+				if (errorsResult.length > 1) {
+					throw new Error(
+						'A test that accepts a suggestion can only trigger one error. ' +
+							`Received errors: \n${errorsResult.map((m) => m.message).join('\t\n')}`
+					)
+				}
+
+				const [error] = errorsResult
+				if (error.suggestions == null) {
+					throw new Error(
+						'This test tried to apply a suggestion, but none were available in the rule failure.'
+					)
+				}
+
+				const suggestionToApply = error.suggestions[entry.acceptSuggestion]
+				const { desc, fix } = suggestionToApply
+				const [start, end] = fix.range
+				const prefix = entry.testSource.slice(0, start)
+				const replacement = fix.text
+				const postfix = entry.testSource.slice(end, entry.testSource.length)
+				const fixedText = prefix + replacement + postfix
+
+				const result = [
+					'Original code:',
+					'==========================',
+					serializedErrors,
+					'',
+					'Code after applying suggestion:',
+					desc,
+					'==========================',
+					fixedText,
+				].join('\n')
+
+				expect(result).toMatchSnapshot()
+			} else {
 				expect(serializedErrors).toMatchSnapshot()
-				return
 			}
-
-			const fixed = linter.verifyAndFix(entry.testSource, lintConfig, entry.fileName)
-			const errorsAfterFixing = linter.verify(fixed.output, lintConfig, entry.fileName)
-			let postFixCode = fixed.output
-			if (errorsAfterFixing.length > 0) {
-				postFixCode = serializeLintResult({
-					lintedSource: fixed.output,
-					lintMessages: errorsAfterFixing,
-				})
-			}
-
-			const result = [
-				'Original code:',
-				'==========================',
-				serializedErrors,
-				'',
-				'Code after applying fixes:',
-				'==========================',
-				postFixCode,
-			].join('\n')
-			expect(result).toMatchSnapshot()
 		})
 	})
 }

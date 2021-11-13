@@ -6,6 +6,7 @@ interface FixtureEntry {
 	fileName: string
 	testSource: string
 	acceptFix?: boolean
+	acceptSuggestion?: number
 	ruleOptions?: any[]
 }
 
@@ -55,11 +56,30 @@ export function parseFixture(fixtureContent: string, fixturePath: string) {
 				case 'acceptfix' as string:
 					entry.acceptFix = true
 					break
+				case 'acceptsuggestion' as string:
+					entry.acceptSuggestion = parseInt(instruction.name, 0)
+					break
 				default:
 					const supported = knownTags.join(', ')
 					console.warn(
 						`Unrecognized tag '@${instruction.tag}' in fixture JSDoc. Supported tags: ${supported}`
 					)
+			}
+		}
+
+		if (entry.acceptSuggestion != null) {
+			if (entry.acceptFix != null) {
+				throw new Error(
+					'Fixes and suggestions cannot be applied at the same time. ESLint suggestions ' +
+						'are intended to be applied atomically in an IDE context.'
+				)
+			}
+
+			if (isNaN(entry.acceptSuggestion)) {
+				throw new Error(
+					'A suggestion to apply should be specified by an integer representing its array position in the report call in the rule. ' +
+						`Received: ${entry.acceptSuggestion}`
+				)
 			}
 		}
 
