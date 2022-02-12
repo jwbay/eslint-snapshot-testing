@@ -16,11 +16,20 @@ export function findFixtureFile(ruleName: string, fixtureDirectory: string) {
 }
 
 function searchForFixture(ruleName: string, directory: string) {
-	const foundFile = fs.readdirSync(directory).find((entry) => {
-		const extension = path.extname(entry)
-		const name = entry.replace(new RegExp(extension + '$'), '')
-		return name === ruleName || name === ruleName + '.fixture'
-	})
+	let foundFile
+
+	try {
+		foundFile = fs.readdirSync(directory).find((entry) => {
+			const extension = path.extname(entry)
+			const name = entry.replace(new RegExp(extension + '$'), '')
+			return name === ruleName || name === ruleName + '.fixture'
+		})
+	} catch (e) {
+		const missingDirectory = (e as NodeJS.ErrnoException)?.code === 'ENOENT'
+		if (!missingDirectory) {
+			throw e
+		}
+	}
 
 	if (foundFile) {
 		return path.join(directory, foundFile)
