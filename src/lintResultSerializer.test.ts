@@ -4,9 +4,27 @@ import { VariableDeclarator } from 'estree'
 
 const processCwd = jest.spyOn(process, 'cwd')
 const sourceCode = `\nconst foo = 'something';`
+let consoleSpy: jest.SpyInstance
 
 beforeEach(() => {
+	consoleSpy?.mockRestore()
 	processCwd.mockReturnValue('/cwd')
+})
+
+it('should surface fatal errors from eslint', () => {
+	consoleSpy = jest.spyOn(console, 'error').mockImplementation(() => {})
+
+	expect(() => {
+		lint(sourceCode, { parser: 'this-parser-does-not-exist' })
+	}).toThrowErrorMatchingInlineSnapshot(
+		`"Encountered fatal error during lint execution: Configured parser 'this-parser-does-not-exist' was not found."`
+	)
+
+	expect(consoleSpy.mock.calls[0][0]).toMatchObject({
+		ruleId: null,
+		severity: 2,
+		message: "Configured parser 'this-parser-does-not-exist' was not found.",
+	})
 })
 
 describe('serializeLintResult supports per-test setup and mocking for lint rules', () => {
@@ -21,10 +39,11 @@ describe('serializeLintResult supports per-test setup and mocking for lint rules
 	})
 })
 
-function lint(source: string) {
+function lint(source: string, config: Linter.Config = {}) {
 	const linter = new Linter({})
 	linter.defineRule('my-rule-name', testRule)
 	const lintMessages = linter.verify(source, {
+		...config,
 		rules: { ['my-rule-name']: 'error' },
 		parserOptions: {
 			ecmaVersion: 2020,

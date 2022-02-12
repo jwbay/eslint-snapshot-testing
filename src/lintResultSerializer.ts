@@ -41,6 +41,8 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 	const uniqueMessages: string[] = []
 
 	lintMessages.forEach((lintMessage) => {
+		checkFatalError(lintMessage)
+
 		// ESLint line & column are 1-indexed for better IDE integration, but 0 works
 		// better for us here
 		const startLine = lintMessage.line - 1
@@ -101,6 +103,16 @@ export function serializeLintResult({ lintedSource, lintMessages }: SerializeOpt
 	)
 
 	return interleaved.join('\n')
+}
+
+function checkFatalError(lintMessage: Linter.LintMessage) {
+	// Allow parsing errors (indicated by non-zero coordinates) to show in the snapshot
+	// instead of throwing a hard error, but something like a misconfigured parser or
+	// missing rule should throw
+	if (lintMessage.fatal && lintMessage.line === 0 && lintMessage.column === 0) {
+		console.error(lintMessage)
+		throw new Error(`Encountered fatal error during lint execution: ${lintMessage.message}`)
+	}
 }
 
 function collapseErrorLines(allErrorLines: string[][]) {
