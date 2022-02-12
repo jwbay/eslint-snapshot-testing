@@ -100,6 +100,16 @@ export function runLintFixtureTests({
 	tests.forEach((entry) => {
 		test(entry.testName, () => {
 			const linter = new Linter({})
+			if (eslintConfig.parser) {
+				try {
+					const parserModule = require(eslintConfig.parser)
+					linter.defineParser(eslintConfig.parser, parserModule)
+				} catch (e) {
+					console.error(`Failed to install configured parser "${eslintConfig.parser}"`)
+					throw e
+				}
+			}
+
 			linter.defineRule(ruleName, rule)
 			const lintConfig: Linter.Config = {
 				...eslintConfig,

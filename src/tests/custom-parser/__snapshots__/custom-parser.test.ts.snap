@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`should parse TypeScript 1`] = `
+"
+interface Test {
+    thing(): void;
+}
+
+const fooTest = 'foo';
+      ~~~~~~~ [1]     
+
+const testObj: Test = {
+    thing() {}
+}
+
+[1] variable name 'fooTest' should not include 'foo'."
+`;
