@@ -1,5 +1,5 @@
-import { runLintFixtureTests } from '../ruleSnapshotTester'
-import rule from './rules/camel-case-local-functions'
+import { runLintFixtureTests } from '../../ruleSnapshotTester'
+import rule from '../rules/camel-case-local-functions'
 import { join } from 'path'
 
 runLintFixtureTests({

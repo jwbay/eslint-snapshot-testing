@@ -1,11 +1,11 @@
-import { runLintFixtureTests } from '../ruleSnapshotTester'
-import rule from './rules/camel-case-local-functions'
+import { runLintFixtureTests } from '../../ruleSnapshotTester'
+import rule from '../rules/camel-case-local-functions'
 
 const consoleWarn = jest.spyOn(console, 'warn').mockImplementation(() => {})
 
 runLintFixtureTests({
 	rule,
-	ruleName: 'unsupported-jsdoc',
+	ruleName: 'runtime-errors-unsupported-jsdoc',
 })
 
 it('should give a helpful warning when encountering an unsupported jsdoc tag in a fixture', () => {

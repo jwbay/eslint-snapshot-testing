@@ -1,5 +1,5 @@
-import { runLintFixtureTests } from '../ruleSnapshotTester'
-import rule from './rules/camel-case-local-functions'
+import { runLintFixtureTests } from '../../ruleSnapshotTester'
+import rule from '../rules/camel-case-local-functions'
 
 let consoleWarn: jest.SpyInstance
 
@@ -30,15 +30,15 @@ it('should give a helpful error when unable to locate a fixture', () => {
 		.replace(/\\/g, '/')
 
 	expect(message).toMatchInlineSnapshot(`
-		"could not find fixture for the rule my-rule-with-missing-fixture.
-		looked for:
-		my-rule-with-missing-fixture.fixture
-		my-rule-with-missing-fixture.fixture.[any extension]
+"could not find fixture for the rule my-rule-with-missing-fixture.
+looked for:
+my-rule-with-missing-fixture.fixture
+my-rule-with-missing-fixture.fixture.[any extension]
 
-		under the following directories:
-		/src/tests
-		/src/tests/__fixtures__"
-	`)
+under the following directories:
+/src/tests/runtime-errors
+/src/tests/runtime-errors/__fixtures__"
+`)
 })
 
 it('should give a helpful error when unable to parse rule options in a fixture', () => {

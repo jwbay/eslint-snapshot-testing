@@ -1,6 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-
 exports[`should only have one test case when fixture starts with whitespace 1`] = `
 "
 function onlyOneTest() {}
